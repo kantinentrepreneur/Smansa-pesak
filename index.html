@@ -1,15 +1,74 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- ========================================== -->
+    <!-- 1. FIREBASE SDK (TAMBAHKAN DI PALING ATAS) -->
+    <!-- ========================================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    
+    <!-- KONFIGURASI FIREBASE -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQgDXOLtINJ2RLXzLqpXFY...", // GANTI DARI CONSOLE
+            authDomain: "kantin-smansa.firebaseapp.com",
+            databaseURL: "https://kantin-smansa-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "kantin-smansa",
+            storageBucket: "kantin-smansa.appspot.com",
+            messagingSenderId: "897377252341",
+            appId: "1:897377252341:web:b92c55a3ee..."
+        };
+        
+        // NYALAKAN FIREBASE
+        firebase.initializeApp(firebaseConfig);
+        
+        // SINGKATAN BIAR MUDAH
+        const DB = firebase.database();
+    </script>
+    
+    <!-- ========================================== -->
+    <!-- 2. META DAN CSS (TETAP DI BAWAH) -->
+    <!-- ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kantin Smansa - Pesan Makanan Online</title>
+    <title>Kantin Smansa - Realtime</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* ============================================
-           CSS MODERN ALA GOFOOD - KANTIN SMANSA
-           ============================================ */
+        /* CSS Anda tetap sama */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary: #FF6B35; ... }
+        /* ... lanjutkan CSS Anda ... */
+    </style>
+</head>
+<body>
+    <!-- HTML BODY ANDA TETAP SAMA -->
+    
+    <div class="app-container">
+        <!-- ... semua HTML Anda ... -->
+    </div>
+    
+    <!-- ========================================== -->
+    <!-- 3. JAVASCRIPT (TETAP DI PALING BAWAH) -->
+    <!-- ========================================== -->
+    <script>
+        // GANTI localStorage dengan DB (Firebase)
         
+        // CONTOH: Simpan menu
+        function saveMenu() {
+            DB.ref('menu').set(state.menu);
+        }
+        
+        // CONTOH: Ambil menu (realtime)
+        DB.ref('menu').on('value', (snapshot) => {
+            state.menu = snapshot.val() || [];
+            updateView();
+        });
+        
+        /* ... lanjutkan JS Anda ... */
+    </script>
+</body>
+</html>
         :root {
             --primary: #FF6B35;
             --primary-dark: #E85D04;
