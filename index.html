@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kantin Smansa - Pesan Makanan Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #E85D04;
+            --secondary: #F7931E;
+            --success: #2ECC71;
+            --dark: #2C3E50;
+            --gray: #95A5A6;
+            --light: #ECF0F1;
+            --white: #FFFFFF;
+            --shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #FFF5F0 0%, #FFE8E0 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0;
+            background: var(--white);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 30px 20px;
+            border-radius: 0 0 30px 30px;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .header-content h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .header-content p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .role-section {
+            padding: 30px 20px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .role-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .role-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .role-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .role-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .role-icon.buyer {
+            background: linear-gradient(135deg, #FFE5E0 0%, #FFD5CC 100%);
+        }
+
+        .role-icon.seller {
+            background: linear-gradient(135deg, #FFF0E0 0%, #FFE0CC 100%);
+        }
+
+        .role-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .role-info p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .role-arrow {
+            margin-left: auto;
+            font-size: 20px;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .role-card:hover .role-arrow {
+            transform: translateX(5px);
+        }
+
+        .login-section {
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-illustration {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #FFE5E0 0%, #FFD5CC 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .login-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .login-header p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .login-form {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #FAFAFA;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(255,107,53,0.1);
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(255,107,53,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,53,0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .error-message {
+            background: #FEE;
+            color: #D32F2F;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .dashboard {
+            background: #F8F9FA;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+            color: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dashboard-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .dashboard-content {
+            padding: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-title-sm {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .add-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(255,107,53,0.3);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-item {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .menu-image {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #FFE5E0 0%, #FFD5CC 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .menu-details {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .menu-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .menu-time {
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .menu-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .btn-edit {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+
+        .btn-delete {
+            background: #FFEBEE;
+            color: #D32F2F;
+        }
+
+        .order-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .order-customer h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .order-customer p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        .status-process {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .status-done {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .order-items {
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #EEE;
+            font-size: 14px;
+        }
+
+        .order-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-accept {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-process {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-chat {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+
+        .search-bar {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            background: none;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .category-pills {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+
+        .category-pill {
+            padding: 10px 20px;
+            background: var(--white);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .category-pill.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .food-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .food-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #FFE5E0 0%, #FFD5CC 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+        }
+
+        .food-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .food-info {
+            padding: 15px;
+        }
+
+        .food-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+
+        .food-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .food-time {
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.02);
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F5F5F5;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--white);
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .qty-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--white);
+            padding: 15px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 90;
+            transition: transform 0.3s ease;
+        }
+
+        .cart-bar.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .cart-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cart-count {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .cart-total {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .tracking-container {
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tracking-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .time-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.3);
+        }
+
+        .time-number {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .time-label {
+            font-size: 12px;
+        }
+
+        .tracking-status {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+
+        .tracking-message {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .tracking-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-icon {
+            background: var(--primary);
+            color: var(--white);
+            animation: pulse 2s infinite;
+        }
+
+        .step.completed .step-icon {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .step-label {
+            font-size: 11px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .chat-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #25D366;
+            color: var(--white);
+            padding: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(37,211,102,0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 30px 30px 0 0;
+            padding: 30px 20px;
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #F5F5F5;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .empty-subtext {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--dark);
+            color: var(--white);
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+
+    <div class="container">
+        <!-- LANDING PAGE -->
+        <div id="landingPage">
+            <div class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <span class="logo-icon">🍽️</span>
+                        <span>Kantin Smansa</span>
+                    </div>
+                </div>
+                <div class="header-content">
+                    <h1>Pesan Makanan Favoritmu Tanpa Antri!</h1>
+                    <p>Pesan dari kelas, ambil di kantin atau diantar ke kelas</p>
+                </div>
+            </div>
+
+            <div class="role-section">
+                <h2 class="section-title">Masuk sebagai</h2>
+                <div class="role-cards">
+                    <div class="role-card" onclick="showSection('buyerHome')">
+                        <div class="role-icon buyer">🎓</div>
+                        <div class="role-info">
+                            <h3>Siswa / Pembeli</h3>
+                            <p>Pesan makanan & tracking pesanan</p>
+                        </div>
+                        <div class="role-arrow">›</div>
+                    </div>
+
+                    <div class="role-card" onclick="showSection('sellerLogin')">
+                        <div class="role-icon seller">👨‍🍳</div>
+                        <div class="role-info">
+                            <h3>Penjual Kantin</h3>
+                            <p>Kelola menu & proses pesanan</p>
+                        </div>
+                        <div class="role-arrow">›</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SELLER LOGIN -->
+        <div id="sellerLogin" class="hidden">
+            <div class="login-section">
+                <button class="btn btn-outline" onclick="backToLanding()" style="width: auto; padding: 10px 20px; margin-bottom: 20px;">
+                    ← Kembali
+                </button>
+
+                <div class="login-header">
+                    <div class="login-illustration">👨‍🍳</div>
+                    <h2>Login Penjual</h2>
+                    <p>Masukkan password dan nomor WhatsApp untuk mengelola kantin</p>
+                </div>
+
+                <div class="login-form">
+                    <div id="loginError" class="error-message">
+                        <span>⚠️</span>
+                        <span>Password salah!</span>
+                    </div>
+
+                    <form id="loginForm" onsubmit="return doLogin(event)">
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="sellerPassword" class="form-input" placeholder="Masukkan password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Nomor WhatsApp</label>
+                            <input type="tel" id="sellerWA" class="form-input" placeholder="Contoh: 6289612345678" required>
+                            <p class="input-hint">Format: 62 (kode Indonesia) + nomor tanpa 0 di depan</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Masuk</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- SELLER DASHBOARD -->
+        <div id="sellerDashboard" class="dashboard hidden">
+            <div class="dashboard-header">
+                <div class="dashboard-top">
+                    <div class="user-info">
+                        <h3>👨‍🍳 Mode Penjual</h3>
+                        <p id="sellerPhoneDisplay">WA: -</p>
+                    </div>
+                    <button class="logout-btn" onclick="doLogout()">Logout</button>
+                </div>
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-number" id="statMenu">0</div>
+                        <div class="stat-label">Menu</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="statOrders">0</div>
+                        <div class="stat-label">Pesanan</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="statPending">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="section-header">
+                    <h3 class="section-title-sm">📋 Menu Saya</h3>
+                    <button class="add-btn" onclick="openMenuModal()">+</button>
+                </div>
+                <div id="sellerMenuList" class="menu-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">🍽️</div>
+                        <div class="empty-text">Belum ada menu</div>
+                        <div class="empty-subtext">Tambahkan menu pertama Anda</div>
+                    </div>
+                </div>
+
+                <div class="section-header" style="margin-top: 30px;">
+                    <h3 class="section-title-sm">📦 Pesanan Masuk</h3>
+                </div>
+                <div id="orderList">
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">Belum ada pesanan</div>
+                        <div class="empty-subtext">Pesanan akan muncul di sini</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUYER HOME -->
+        <div id="buyerHome" class="dashboard hidden">
+            <div class="dashboard-header">
+                <div class="dashboard-top">
+                    <div class="user-info">
+                        <h3>🎓 Selamat Datang!</h3>
+                        <p>Pesan makanan favoritmu</p>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Lagi mau mamam apa?" id="searchFood" onkeyup="searchMenu()">
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="category-pills">
+                    <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
+                    <div class="category-pill" onclick="filterCategory('food', this)">Makanan</div>
+                    <div class="category-pill" onclick="filterCategory('drink', this)">Minuman</div>
+                    <div class="category-pill" onclick="filterCategory('snack', this)">Snack</div>
+                </div>
+
+                <div id="buyerMenuList" class="food-grid">
+                    <div class="empty-state">
+                        <div class="empty-icon">🍽️</div>
+                        <div class="empty-text">Menu belum tersedia</div>
+                        <div class="empty-subtext">Tunggu penjual menambahkan menu</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Bar -->
+            <div id="cartBar" class="cart-bar">
+                <div class="cart-info">
+                    <span class="cart-count"><span id="cartItemCount">0</span> item</span>
+                    <span class="cart-total">Rp <span id="cartTotal">0</span></span>
+                </div>
+                <button class="btn btn-primary" onclick="openCheckoutModal()">
+                    Lanjutkan Pesanan →
+                </button>
+            </div>
+        </div>
+
+        <!-- CHECKOUT MODAL -->
+        <div id="checkoutModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Data Pemesan</h3>
+                    <button class="modal-close" onclick="closeCheckoutModal()">×</button>
+                </div>
+                
+                <form id="checkoutForm" onsubmit="return submitOrder(event)">
+                    <div class="form-group">
+                        <label class="form-label">Nama Lengkap</label>
+                        <input type="text" id="buyerName" class="form-input" placeholder="Nama kamu" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Kelas / Lokasi</label>
+                        <input type="text" id="buyerClass" class="form-input" placeholder="Contoh: Kelas 10A / Perpustakaan" required>
+                    </div>
+
+                    <div style="background: #FFF5F0; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <div style="font-weight: 600; margin-bottom: 10px;">Ringkasan Pesanan:</div>
+                        <div id="checkoutItems" style="font-size: 14px; color: #666; margin-bottom: 10px;"></div>
+                        <div style="font-size: 18px; font-weight: 700; color: var(--primary);">
+                            Total: Rp <span id="checkoutTotal">0</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        📱 Pesan via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TRACKING PAGE -->
+        <div id="trackingPage" class="hidden">
+            <div class="tracking-container">
+                <button class="btn btn-outline" onclick="backToBuyer()" style="width: auto; padding: 10px 20px; margin-bottom: 20px;">
+                    ← Kembali ke Menu
+                </button>
+
+                <div class="tracking-card">
+                    <div class="time-circle">
+                        <div class="time-number" id="estimateTime">15</div>
+                        <div class="time-label">menit</div>
+                    </div>
+                    
+                    <div class="tracking-status" id="trackingStatus">Sedang Diproses</div>
+                    <div class="tracking-message" id="trackingMessage">
+                        Makananmu sedang dimasak dengan sepenuh hati oleh chef kami
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 33%"></div>
+                    </div>
+
+                    <div class="tracking-steps">
+                        <div class="step completed" id="step1">
+                            <div class="step-icon">📝</div>
+                            <div class="step-label">Dipesan</div>
+                        </div>
+                        <div class="step active" id="step2">
+                            <div class="step-icon">👨‍🍳</div>
+                            <div class="step-label">Diproses</div>
+                        </div>
+                        <div class="step" id="step3">
+                            <div class="step-icon">🚚</div>
+                            <div class="step-label">Diantar</div>
+                        </div>
+                        <div class="step" id="step4">
+                            <div class="step-icon">✅</div>
+                            <div class="step-label">Selesai</div>
+                        </div>
+                    </div>
+
+                    <a href="#" id="chatSellerBtn" class="chat-btn" target="_blank">
+                        💬 Chat Penjual
+                    </a>
+                </div>
+
+                <div style="background: var(--white); border-radius: 16px; padding: 20px; box-shadow: var(--shadow);">
+                    <h3 style="margin-bottom: 15px; font-size: 16px;">Detail Pesanan</h3>
+                    <div id="trackingDetails"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENU MODAL (Seller) -->
+        <div id="menuModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="menuModalTitle">Tambah Menu</h3>
+                    <button class="modal-close" onclick="closeMenuModal()">×</button>
+                </div>
+                
+                <form id="menuForm" onsubmit="return saveMenu(event)">
+                    <input type="hidden" id="editMenuId">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nama Makanan</label>
+                        <input type="text" id="menuName" class="form-input" placeholder="Contoh: Nasi Goreng Spesial" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Harga (Rp)</label>
+                        <input type="number" id="menuPrice" class="form-input" placeholder="15000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Kategori</label>
+                        <select id="menuCategory" class="form-input" style="appearance: none;">
+                            <option value="food">🍛 Makanan</option>
+                            <option value="drink">🥤 Minuman</option>
+                            <option value="snack">🍿 Snack</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Estimasi Waktu (menit)</label>
+                        <input type="number" id="menuTime" class="form-input" placeholder="10" required min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea id="menuDesc" class="form-input" rows="2" placeholder="Deskripsi singkat menu..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btnSaveMenu">Simpan Menu</button>
+                    <button type="button" class="btn btn-outline hidden" id="btnCancelEdit" onclick="resetMenuForm()">Batal</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const SELLER_PASSWORD = 'smansa2024';
+        
+        // State
+        let menuData = JSON.parse(localStorage.getItem('kantin_menu')) || [];
+        let ordersData = JSON.parse(localStorage.getItem('kantin_orders')) || [];
+        let cart = [];
+        let currentBuyer = '';
+        let sellerWA = '';
+        let isSellerLoggedIn = sessionStorage.getItem('seller_logged_in') === 'true';
+        let currentOrderId = null;
+
+        // Emoji mapping
+        const EMOJIS = {
+            food: '🍛',
+            drink: '🥤',
+            snack: '🍿'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isSellerLoggedIn) {
+                sellerWA = sessionStorage.getItem('seller_wa') || '';
+                showSection('sellerDashboard');
+            }
+        });
+
+        // Navigation Functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('sellerLogin').classList.add('hidden');
+            document.getElementById('sellerDashboard').classList.add('hidden');
+            document.getElementById('buyerHome').classList.add('hidden');
+            document.getElementById('trackingPage').classList.add('hidden');
+            
+            // Show target section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Initialize section
+            if (sectionId === 'sellerDashboard') {
+                updateSellerView();
+            } else if (sectionId === 'buyerHome') {
+                updateBuyerView();
+            }
+        }
+
+        function backToLanding() {
+            showSection('landingPage');
+        }
+
+        function backToBuyer() {
+            showSection('buyerHome');
+            cart = [];
+            updateCart();
+        }
+
+        // Seller Login
+        function doLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById('sellerPassword').value;
+            const wa = document.getElementById('sellerWA').value;
+            
+            if (password === SELLER_PASSWORD) {
+                sellerWA = wa;
+                sessionStorage.setItem('seller_logged_in', 'true');
+                sessionStorage.setItem('seller_wa', wa);
+                isSellerLoggedIn = true;
+                
+                showNotif('✅ Login berhasil!');
+                showSection('sellerDashboard');
+            } else {
+                document.getElementById('loginError').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('loginError').classList.remove('show');
+                }, 3000);
+            }
+            return false;
+        }
+
+        function doLogout() {
+            if (confirm('Yakin ingin logout?')) {
+                sessionStorage.removeItem('seller_logged_in');
+                sessionStorage.removeItem('seller_wa');
+                isSellerLoggedIn = false;
+                sellerWA = '';
+                showNotif('👋 Logout berhasil');
+                backToLanding();
+            }
+        }
+
+        // Menu Management
+        function openMenuModal() {
+            document.getElementById('menuModal').classList.add('show');
+            document.getElementById('menuModalTitle').textContent = 'Tambah Menu';
+            resetMenuForm();
+        }
+
+        function closeMenuModal() {
+            document.getElementById('menuModal').classList.remove('show');
+        }
+
+        function resetMenuForm() {
+            document.getElementById('menuForm').reset();
+            document.getElementById('editMenuId').value = '';
+            document.getElementById('btnSaveMenu').textContent = 'Simpan Menu';
+            document.getElementById('btnCancelEdit').classList.add('hidden');
+        }
+
+        function getEmoji(category) {
+            return EMOJIS[category] || '🍽️';
+        }
+
+        function saveMenu(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('editMenuId').value;
+            const category = document.getElementById('menuCategory').value;
+            
+            const menu = {
+                id: id || Date.now().toString(),
+                name: document.getElementById('menuName').value,
+                price: parseInt(document.getElementById('menuPrice').value),
+                category: category,
+                time: parseInt(document.getElementById('menuTime').value),
+                desc: document.getElementById('menuDesc').value,
+                emoji: getEmoji(category)
+            };
+
+            if (id) {
+                const index = menuData.findIndex(m => m.id === id);
+                menuData[index] = menu;
+                showNotif('Menu diupdate!');
+            } else {
+                menuData.push(menu);
+                showNotif('Menu ditambahkan!');
+            }
+
+            localStorage.setItem('kantin_menu', JSON.stringify(menuData));
+            closeMenuModal();
+            updateSellerView();
+        }
+
+        function editMenu(id) {
+            const menu = menuData.find(m => m.id === id);
+            if (!menu) return;
+            
+            document.getElementById('editMenuId').value = menu.id;
+            document.getElementById('menuName').value = menu.name;
+            document.getElementById('menuPrice').value = menu.price;
+            document.getElementById('menuCategory').value = menu.category || 'food';
+            document.getElementById('menuTime').value = menu.time;
+            document.getElementById('menuDesc').value = menu.desc || '';
+            
+            document.getElementById('menuModalTitle').textContent = 'Edit Menu';
+            document.getElementById('btnSaveMenu').textContent = 'Update Menu';
+            document.getElementById('btnCancelEdit').classList.remove('hidden');
+            
+            openMenuModal();
+        }
+
+        function deleteMenu(id) {
+            if (confirm('Hapus menu ini?')) {
+                menuData = menuData.filter(m => m.id !== id);
+                localStorage.setItem('kantin_menu', JSON.stringify(menuData));
+                updateSellerView();
+                showNotif('Menu dihapus');
+            }
+        }
+
+        function updateSellerView() {
+            // Update stats
+            document.getElementById('statMenu').textContent = menuData.length;
+            document.getElementById('sellerPhoneDisplay').textContent = 'WA: ' + (sellerWA || '-');
+            
+            const today = new Date().toDateString();
+            const todayOrders = ordersData.filter(o => {
+                const orderDate = new Date(o.timestamp || Date.now()).toDateString();
+                return orderDate === today;
+            });
+            
+            document.getElementById('statOrders').textContent = todayOrders.length;
+            document.getElementById('statPending').textContent = ordersData.filter(o => o.status === 'pending').length;
+
+            // Update menu list
+            const menuContainer = document.getElementById('sellerMenuList');
+            if (menuData.length === 0) {
+                menuContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🍽️</div>
+                        <div class="empty-text">Belum ada menu</div>
+                        <div class="empty-subtext">Tambahkan menu pertama Anda</div>
+                    </div>
+                `;
+            } else {
+                menuContainer.innerHTML = menuData.map(menu => `
+                    <div class="menu-item">
+                        <div class="menu-image">${menu.emoji || getEmoji(menu.category)}</div>
+                        <div class="menu-details">
+                            <div>
+                                <div class="menu-name">${menu.name}</div>
+                                <div class="menu-price">Rp ${menu.price.toLocaleString()}</div>
+                                <div class="menu-time">⏱️ ${menu.time} menit</div>
+                            </div>
+                            <div class="menu-actions">
+                                <button class="btn-icon btn-edit" onclick="editMenu('${menu.id}')">✏️</button>
+                                <button class="btn-icon btn-delete" onclick="deleteMenu('${menu.id}')">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Update orders
+            updateOrderList();
+        }
+
+        function updateOrderList() {
+            const container = document.getElementById('orderList');
+            const pendingOrders = ordersData.filter(o => o.status !== 'done').reverse();
+            
+            if (pendingOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">Belum ada pesanan</div>
+                        <div class="empty-subtext">Pesanan akan muncul di sini</div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = pendingOrders.map(order => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-customer">
+                                <h4>${order.buyer}</h4>
+                                <p>${order.class} • ${order.time}</p>
+                            </div>
+                            <span class="order-status status-${order.status}">${getStatusLabel(order.status)}</span>
+                        </div>
+                        <div class="order-items">
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <span>${item.emoji || getEmoji(item.category)} ${item.name} x${item.qty}</span>
+                                    <span>Rp ${(item.price * item.qty).toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="order-total">Total: Rp ${order.total.toLocaleString()}</div>
+                        <div class="order-actions">
+                            ${order.status === 'pending' ? 
+                                `<button class="btn-sm btn-accept" onclick="updateOrderStatus('${order.id}', 'process')">✅ Terima</button>` :
+                                `<button class="btn-sm btn-process" onclick="updateOrderStatus('${order.id}', 'done')">🚚 Antar</button>`
+                            }
+                            <a href="https://wa.me/${order.buyerPhone || sellerWA}?text=${encodeURIComponent('Halo ' + order.buyer + ', pesanan kamu ' + getStatusLabel(order.status))}" 
+                               target="_blank" class="btn-sm btn-chat">💬 Chat</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': 'Menunggu',
+                'process': 'Diproses',
+                'done': 'Selesai'
+            };
+            return labels[status] || status;
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = ordersData.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                localStorage.setItem('kantin_orders', JSON.stringify(ordersData));
+                updateOrderList();
+                updateSellerView();
+                showNotif('Status pesanan diupdate!');
+            }
+        }
+
+        // Buyer Functions
+        function updateBuyerView() {
+            const container = document.getElementById('buyerMenuList');
+            
+            if (menuData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🍽️</div>
+                        <div class="empty-text">Menu belum tersedia</div>
+                        <div class="empty-subtext">Tunggu penjual menambahkan menu</div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = menuData.map(menu => {
+                    const inCart = cart.find(c => c.id === menu.id);
+                    return `
+                    <div class="food-card" data-category="${menu.category || 'food'}">
+                        <div class="food-image">
+                            ${menu.emoji || getEmoji(menu.category)}
+                            ${menu.time <= 10 ? '<span class="food-badge">⚡ Cepat</span>' : ''}
+                        </div>
+                        <div class="food-info">
+                            <div class="food-name">${menu.name}</div>
+                            <div class="food-price">Rp ${menu.price.toLocaleString()}</div>
+                            <div class="food-time">⏱️ ${menu.time} menit</div>
+                            ${inCart ? `
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="updateQty('${menu.id}', -1)">−</button>
+                                    <span class="qty-value">${inCart.qty}</span>
+                                    <button class="qty-btn" onclick="updateQty('${menu.id}', 1)">+</button>
+                                </div>
+                            ` : `
+                                <button class="add-to-cart" onclick="addToCart('${menu.id}')">
+                                    🛒 Tambah
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `}).join('');
+            }
+        }
+
+        function filterCategory(category, element) {
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+            
+            const items = document.querySelectorAll('.food-card');
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function searchMenu() {
+            const query = document.getElementById('searchFood').value.toLowerCase();
+            const items = document.querySelectorAll('.food-card');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.food-name').textContent.toLowerCase();
+                item.style.display = name.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        function addToCart(menuId) {
+            const menu = menuData.find(m => m.id === menuId);
+            if (!menu) return;
+            
+            cart.push({ ...menu, qty: 1 });
+            updateBuyerView();
+            updateCart();
+            showNotif('Ditambahkan ke keranjang');
+        }
+
+        function updateQty(menuId, change) {
+            const item = cart.find(c => c.id === menuId);
+            if (!item) return;
+            
+            item.qty += change;
+            if (item.qty <= 0) {
+                cart = cart.filter(c => c.id !== menuId);
+            }
+            updateBuyerView();
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartBar = document.getElementById('cartBar');
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            
+            if (count > 0) {
+                cartBar.classList.add('show');
+                document.getElementById('cartItemCount').textContent = count;
+                document.getElementById('cartTotal').textContent = total.toLocaleString();
+            } else {
+                cartBar.classList.remove('show');
+            }
+        }
+
+        function openCheckoutModal() {
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            document.getElementById('checkoutTotal').textContent = total.toLocaleString();
+            document.getElementById('checkoutItems').innerHTML = cart.map(item => 
+                `<div>${item.emoji || getEmoji(item.category)} ${item.name} x${item.qty}</div>`
+            ).join('');
+            document.getElementById('checkoutModal').classList.add('show');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.remove('show');
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('buyerName').value.trim();
+            const cls = document.getElementById('buyerClass').value.trim();
+            
+            if (!name || !cls || cart.length === 0) return;
+            
+            currentBuyer = name;
+            const maxTime = Math.max(...cart.map(item => item.time));
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            
+            const order = {
+                id: Date.now().toString(),
+                buyer: name,
+                buyerPhone: sellerWA,
+                class: cls,
+                items: [...cart],
+                total: total,
+                status: 'pending',
+                time: new Date().toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now(),
+                estimateTime: maxTime,
+                sellerWA: sellerWA
+            };
+            
+            ordersData.push(order);
+            localStorage.setItem('kantin_orders', JSON.stringify(ordersData));
+            currentOrderId = order.id;
+            
+            // Send WA message
+            let waMessage = `*PESANAN BARU - KANTIN SMANSA*\\n\\n`;
+            waMessage += `Nama: ${name}\\n`;
+            waMessage += `Kelas/Lokasi: ${cls}\\n\\n`;
+            waMessage += `*Pesanan:*\\n`;
+            cart.forEach(item => {
+                waMessage += `• ${item.emoji || getEmoji(item.category)} ${item.name} x${item.qty} = Rp ${(item.price * item.qty).toLocaleString()}\\n`;
+            });
+            waMessage += `\\n*Total: Rp ${total.toLocaleString()}*\\n`;
+            waMessage += `*Estimasi: ${maxTime} menit*\\n\\n`;
+            waMessage += `Terima kasih! 🙏`;
+            
+            window.open(`https://wa.me/${sellerWA}?text=${encodeURIComponent(waMessage)}`, '_blank');
+            
+            closeCheckoutModal();
+            showTracking(order);
+        }
+
+        function showTracking(order) {
+            showSection('trackingPage');
+            
+            document.getElementById('estimateTime').textContent = order.estimateTime;
+            document.getElementById('trackingDetails').innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>${order.buyer}</strong></div>
+                <div style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                    ${order.items.map(i => `• ${i.emoji || getEmoji(i.category)} ${i.name} x${i.qty}`).join('<br>')}
+                </div>
+                <div style="font-weight: 700; color: var(--primary); font-size: 18px;">
+                    Total: Rp ${order.total.toLocaleString()}
+                </div>
+            `;
+            
+            document.getElementById('chatSellerBtn').href = `https://wa.me/${order.sellerWA}?text=${encodeURIComponent('Halo, saya ' + order.buyer + ' mau tanya pesanan saya')}`;
+            
+            updateTrackingStatus(order.status);
+        }
+
+        function updateTrackingStatus(status) {
+            const steps = {
+                'pending': { fill: '25%', step: 1, text: 'Menunggu Konfirmasi', msg: 'Pesananmu sedang menunggu konfirmasi dari penjual' },
+                'process': { fill: '50%', step: 2, text: 'Sedang Diproses', msg: 'Makananmu sedang dimasak dengan sepenuh hati' },
+                'deliver': { fill: '75%', step: 3, text: 'Sedang Diantar', msg: 'Pesananmu sedang dalam perjalanan ke kelasmu' },
+                'done': { fill: '100%', step: 4, text: 'Pesanan Selesai', msg: 'Selamat menikmati makananmu! 🎉' }
+            };
+            
+            const config = steps[status] || steps['pending'];
+            
+            document.getElementById('progressFill').style.width = config.fill;
+            document.getElementById('trackingStatus').textContent = config.text;
+            document.getElementById('trackingMessage').textContent = config.msg;
+            
+            for (let i = 1; i <= 4; i++) {
+                const stepEl = document.getElementById('step' + i);
+                stepEl.classList.remove('active', 'completed');
+                
+                if (i < config.step) {
+                    stepEl.classList.add('completed');
+                } else if (i === config.step) {
+                    stepEl.classList.add('active');
+                }
+            }
+        }
+
+        function showNotif(message) {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.classList.add('show');
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+        }
+
+        // Auto refresh for seller
+        setInterval(() => {
+            if (!document.getElementById('sellerDashboard').classList.contains('hidden')) {
+                const currentOrders = JSON.parse(localStorage.getItem('kantin_orders')) || [];
+                if (JSON.stringify(currentOrders) !== JSON.stringify(ordersData)) {
+                    ordersData = currentOrders;
+                    updateOrderList();
+                    updateSellerView();
+                }
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
