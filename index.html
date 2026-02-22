@@ -1,1173 +1,585 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <!-- ========================================== -->
-    <!-- 1. FIREBASE SDK (TAMBAHKAN DI PALING ATAS) -->
-    <!-- ========================================== -->
+    <!-- ============================================
+         1. FIREBASE SDK (PALING ATAS)
+         ============================================ -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
     
-    <!-- KONFIGURASI FIREBASE -->
     <script>
+        // GANTI INI DENGAN DATA DARI FIREBASE CONSOLE ANDA
         const firebaseConfig = {
-            apiKey: "AIzaSyBQgDXOLtINJ2RLXzLqpXFY...", // GANTI DARI CONSOLE
+            apiKey: "AIzaSyBQgDXOLtINJ2RLXzLqpXFY...", // GANTI
             authDomain: "kantin-smansa.firebaseapp.com",
-            databaseURL: "https://kantin-smansa-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            databaseURL: "https://kantin-smansa-default-rtdb.asia-southeast1.firebasedatabase.app/", // GANTI
             projectId: "kantin-smansa",
             storageBucket: "kantin-smansa.appspot.com",
             messagingSenderId: "897377252341",
-            appId: "1:897377252341:web:b92c55a3ee..."
+            appId: "1:897377252341:web:b92c55a3ee..." // GANTI
         };
         
         // NYALAKAN FIREBASE
         firebase.initializeApp(firebaseConfig);
-        
-        // SINGKATAN BIAR MUDAH
         const DB = firebase.database();
     </script>
     
-    <!-- ========================================== -->
-    <!-- 2. META DAN CSS (TETAP DI BAWAH) -->
-    <!-- ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kantin Smansa - Realtime</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS Anda tetap sama */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary: #FF6B35; ... }
-        /* ... lanjutkan CSS Anda ... */
-    </style>
-</head>
-<body>
-    <!-- HTML BODY ANDA TETAP SAMA -->
-    
-    <div class="app-container">
-        <!-- ... semua HTML Anda ... -->
-    </div>
-    
-    <!-- ========================================== -->
-    <!-- 3. JAVASCRIPT (TETAP DI PALING BAWAH) -->
-    <!-- ========================================== -->
-    <script>
-        // GANTI localStorage dengan DB (Firebase)
         
-        // CONTOH: Simpan menu
-        function saveMenu() {
-            DB.ref('menu').set(state.menu);
-        }
-        
-        // CONTOH: Ambil menu (realtime)
-        DB.ref('menu').on('value', (snapshot) => {
-            state.menu = snapshot.val() || [];
-            updateView();
-        });
-        
-        /* ... lanjutkan JS Anda ... */
-    </script>
-</body>
-</html>
         :root {
             --primary: #FF6B35;
             --primary-dark: #E85D04;
             --primary-light: #FFF5F0;
-            --secondary: #F7931E;
             --success: #2ECC71;
-            --success-light: #E8F5E9;
-            --info: #3498DB;
-            --info-light: #E3F2FD;
-            --warning: #F1C40F;
             --dark: #2C3E50;
             --gray: #95A5A6;
-            --gray-light: #ECF0F1;
             --white: #FFFFFF;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
             --shadow: 0 4px 20px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
-            --shadow-xl: 0 20px 60px rgba(0,0,0,0.2);
-            --radius-sm: 12px;
             --radius: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #FFF5F0 0%, #FFE8E0 100%);
             min-height: 100vh;
             color: var(--dark);
-            line-height: 1.6;
-            overflow-x: hidden;
         }
-
-        /* ============================================
-           ANIMATIONS
-           ============================================ */
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,107,53,0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255,107,53,0); }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
-
-        @keyframes steam {
-            0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
-        }
-
-        @keyframes fire {
-            0%, 100% { transform: scaleY(1); opacity: 0.8; }
-            50% { transform: scaleY(1.3); opacity: 1; }
-        }
-
-        @keyframes drive {
-            0%, 100% { transform: translateX(0) translateY(0); }
-            25% { transform: translateX(2px) translateY(-2px); }
-            75% { transform: translateX(-2px) translateY(-1px); }
-        }
-
-        @keyframes road-move {
-            0% { background-position: 0 0; }
-            100% { background-position: -40px 0; }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes ring {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        /* ============================================
-           LAYOUT CONTAINER
-           ============================================ */
-        
-        .app-container {
+        .container {
             max-width: 480px;
             margin: 0 auto;
-            min-height: 100vh;
             background: var(--white);
-            position: relative;
-            overflow-x: hidden;
-            box-shadow: var(--shadow-xl);
-        }
-
-        .page {
-            display: none;
-            animation: fadeIn 0.5s ease;
             min-height: 100vh;
+            box-shadow: var(--shadow);
         }
-
-        .page.active {
-            display: block;
-        }
-
-        /* ============================================
-           HEADER COMPONENTS
-           ============================================ */
         
+        .hidden { display: none !important; }
+        
+        /* HEADER */
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             padding: 30px 20px;
-            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+            border-radius: 0 0 30px 30px;
             color: var(--white);
-            position: relative;
-            overflow: hidden;
         }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
+        
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
             font-size: 24px;
             font-weight: 800;
+            margin-bottom: 20px;
         }
-
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            animation: float 3s ease-in-out infinite;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-content h1 {
+        
+        .header h1 {
             font-size: 28px;
             font-weight: 700;
             line-height: 1.3;
-            margin-bottom: 8px;
         }
-
-        .header-content p {
+        
+        .header p {
             opacity: 0.9;
             font-size: 14px;
-            font-weight: 400;
+            margin-top: 8px;
         }
-
-        /* ============================================
-           ROLE SELECTION CARDS
-           ============================================ */
         
+        /* ROLE CARDS */
         .role-section {
             padding: 30px 20px;
         }
-
+        
         .section-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             text-align: center;
-            margin-bottom: 25px;
-            color: var(--dark);
+            margin-bottom: 20px;
         }
-
-        .role-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
+        
         .role-card {
             background: var(--white);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             padding: 24px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
+            margin-bottom: 16px;
             box-shadow: var(--shadow);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
         }
-
-        .role-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background: var(--primary);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-        }
-
+        
         .role-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
             border-color: var(--primary);
         }
-
-        .role-card:hover::before {
-            transform: scaleY(1);
-        }
-
-        .role-icon-wrap {
-            width: 70px;
-            height: 70px;
-            border-radius: var(--radius);
+        
+        .role-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
+            font-size: 32px;
         }
-
-        .role-card:hover .role-icon-wrap {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .role-icon-wrap.buyer {
-            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-        }
-
-        .role-icon-wrap.seller {
-            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
-        }
-
+        
+        .role-icon.buyer { background: #E3F2FD; }
+        .role-icon.seller { background: #FFF3E0; }
+        
         .role-info h3 {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--dark);
         }
-
+        
         .role-info p {
             font-size: 13px;
             color: var(--gray);
-            font-weight: 500;
         }
-
+        
         .role-arrow {
             margin-left: auto;
-            width: 40px;
-            height: 40px;
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        /* FORMS */
+        .form-container {
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .btn-back {
+            background: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-illustration {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
             background: var(--primary-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            font-size: 20px;
-            transition: all 0.3s ease;
+            font-size: 60px;
         }
-
-        .role-card:hover .role-arrow {
-            background: var(--primary);
-            color: var(--white);
-            transform: translateX(5px);
-        }
-
-        /* ============================================
-           FORMS & INPUTS
-           ============================================ */
         
-        .form-container {
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 30px;
-            animation: fadeInScale 0.5s ease;
-        }
-
-        .form-illustration {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, var(--primary-light) 0%, #FFE0E0 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: var(--shadow);
-        }
-
-        .form-header h2 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .form-header p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-
         .form-card {
             background: var(--white);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            box-shadow: var(--shadow-lg);
-            margin-top: auto;
-            animation: slideUp 0.5s ease;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
         }
-
+        
         .form-group {
             margin-bottom: 20px;
         }
-
+        
         .form-label {
             display: block;
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--dark);
         }
-
+        
         .form-input {
             width: 100%;
             padding: 16px;
             border: 2px solid #E8E8E8;
-            border-radius: var(--radius);
+            border-radius: 12px;
             font-size: 16px;
             font-family: inherit;
-            transition: all 0.3s ease;
-            background: #FAFAFA;
         }
-
+        
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(255,107,53,0.1);
         }
-
+        
         .input-hint {
             font-size: 12px;
             color: var(--gray);
             margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
-
+        
         .btn {
             width: 100%;
             padding: 16px;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
-
+        
         .btn-primary {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
-            box-shadow: 0 4px 15px rgba(255,107,53,0.4);
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255,107,53,0.5);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            margin-top: 12px;
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        .btn-sm {
-            padding: 10px 16px;
-            font-size: 13px;
-            width: auto;
-        }
-
-        .btn-back {
-            width: auto;
-            padding: 10px 20px;
-            margin-bottom: 20px;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 600;
-            color: var(--dark);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: var(--shadow-sm);
-        }
-
+        
         .error-message {
             background: #FFEBEE;
             color: #C62828;
-            padding: 12px 16px;
-            border-radius: var(--radius);
+            padding: 12px;
+            border-radius: 12px;
             font-size: 14px;
             margin-bottom: 16px;
             display: none;
             align-items: center;
             gap: 8px;
-            border-left: 4px solid #C62828;
         }
-
-        .error-message.show {
-            display: flex;
-            animation: shake 0.5s ease;
-        }
-
-        /* ============================================
-           DASHBOARD LAYOUT
-           ============================================ */
         
+        /* DASHBOARD */
         .dashboard {
             background: #F8F9FA;
             min-height: 100vh;
             padding-bottom: 100px;
         }
-
+        
         .dashboard-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             padding: 20px;
             color: var(--white);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+            border-radius: 0 0 30px 30px;
         }
-
+        
         .dashboard-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
+        
         .user-info h3 {
             font-size: 20px;
             font-weight: 700;
-            margin-bottom: 2px;
         }
-
-        .user-info p {
-            font-size: 13px;
-            opacity: 0.9;
-            font-weight: 500;
-        }
-
+        
         .logout-btn {
             background: rgba(255,255,255,0.2);
             border: none;
             color: var(--white);
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
         }
-
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
+        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
-
+        
         .stat-card {
             background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
             padding: 16px;
-            border-radius: var(--radius);
+            border-radius: 12px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
         }
-
+        
         .stat-number {
             font-size: 28px;
             font-weight: 800;
-            margin-bottom: 2px;
         }
-
+        
         .stat-label {
-            font-size: 11px;
+            font-size: 12px;
             opacity: 0.9;
-            font-weight: 500;
         }
-
+        
         .dashboard-content {
             padding: 20px;
         }
-
+        
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-
+        
         .section-title-sm {
             font-size: 18px;
             font-weight: 700;
-            color: var(--dark);
         }
-
+        
         .add-btn {
             width: 44px;
             height: 44px;
-            border-radius: var(--radius);
+            border-radius: 12px;
             background: var(--primary);
             color: var(--white);
             border: none;
             font-size: 24px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
-            transition: all 0.3s ease;
         }
-
-        .add-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-        }
-
-        /* ============================================
-           MENU ITEMS
-           ============================================ */
         
-        .menu-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .menu-card {
+        /* CARDS */
+        .menu-card, .order-card, .food-card {
             background: var(--white);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
             box-shadow: var(--shadow);
+        }
+        
+        .menu-card {
             display: flex;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.05);
+            gap: 16px;
         }
-
-        .menu-card:hover {
-            transform: translateX(8px);
-            box-shadow: var(--shadow-lg);
-        }
-
+        
         .menu-image {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, var(--primary-light) 0%, #FFE0E0 100%);
+            width: 80px;
+            height: 80px;
+            background: var(--primary-light);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            flex-shrink: 0;
+            font-size: 40px;
         }
-
-        .menu-details {
-            flex: 1;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
+        
+        .menu-details { flex: 1; }
+        
         .menu-name {
             font-weight: 700;
             font-size: 16px;
             margin-bottom: 4px;
-            color: var(--dark);
         }
-
+        
         .menu-price {
             color: var(--primary);
             font-weight: 800;
             font-size: 18px;
         }
-
-        .menu-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 12px;
-            color: var(--gray);
-            margin-top: 4px;
-        }
-
+        
         .menu-actions {
             display: flex;
             gap: 8px;
             margin-top: 8px;
         }
-
+        
         .btn-icon {
             width: 36px;
             height: 36px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 16px;
-            transition: all 0.2s ease;
         }
-
-        .btn-edit {
-            background: var(--info-light);
-            color: var(--info);
-        }
-
-        .btn-edit:hover {
-            background: var(--info);
-            color: var(--white);
-        }
-
-        .btn-delete {
-            background: #FFEBEE;
-            color: #C62828;
-        }
-
-        .btn-delete:hover {
-            background: #C62828;
-            color: var(--white);
-        }
-
-        /* ============================================
-           ORDER CARDS (SELLER VIEW)
-           ============================================ */
         
-        .order-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
+        .btn-edit { background: #E3F2FD; color: #1976D2; }
+        .btn-delete { background: #FFEBEE; color: #C62828; }
+        
+        /* ORDER CARD */
         .order-card {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            box-shadow: var(--shadow);
             border-left: 4px solid var(--primary);
-            animation: fadeIn 0.5s ease;
-            position: relative;
-            overflow: hidden;
         }
-
-        .order-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, transparent 0%, rgba(255,107,53,0.03) 100%);
-            border-radius: 0 0 0 100%;
-        }
-
+        
         .order-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 12px;
         }
-
+        
         .order-customer h4 {
             font-size: 16px;
             font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--dark);
         }
-
-        .order-customer .customer-phone {
-            font-size: 12px;
+        
+        .customer-phone {
+            font-size: 13px;
             color: var(--primary);
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 2px;
         }
-
-        .order-customer p {
-            font-size: 13px;
-            color: var(--gray);
-            margin-top: 4px;
-        }
-
+        
         .status-badge {
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-
-        .status-pending {
-            background: #FFF3E0;
-            color: #E65100;
-        }
-
-        .status-process {
-            background: var(--info-light);
-            color: #1565C0;
-        }
-
-        .status-done {
-            background: var(--success-light);
-            color: #2E7D32;
-        }
-
+        
+        .status-pending { background: #FFF3E0; color: #E65100; }
+        .status-process { background: #E3F2FD; color: #1565C0; }
+        .status-done { background: #E8F5E9; color: #2E7D32; }
+        
         .order-items {
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
+            background: #FAFAFA;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
         }
-
+        
         .order-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed #E0E0E0;
+            padding: 6px 0;
             font-size: 14px;
+            border-bottom: 1px dashed #E0E0E0;
         }
-
-        .order-item:last-child {
-            border-bottom: none;
-        }
-
+        
         .order-total {
             font-size: 20px;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 12px;
         }
-
+        
         .order-actions {
             display: flex;
             gap: 10px;
-            position: relative;
-            z-index: 1;
         }
-
+        
         .btn-action {
             flex: 1;
             padding: 12px;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 10px;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
         }
-
-        .btn-accept {
-            background: var(--success);
-            color: var(--white);
-            box-shadow: 0 4px 12px rgba(46,204,113,0.3);
-        }
-
-        .btn-accept:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(46,204,113,0.4);
-        }
-
-        .btn-process {
-            background: var(--primary);
-            color: var(--white);
-            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
-        }
-
-        .btn-chat-seller {
+        
+        .btn-accept { background: var(--success); color: var(--white); }
+        .btn-process { background: var(--primary); color: var(--white); }
+        .btn-chat {
             background: #25D366;
             color: var(--white);
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .btn-chat-seller:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(37,211,102,0.4);
-        }
-
-        /* ============================================
-           BUYER VIEW - FOOD GRID
-           ============================================ */
         
+        /* BUYER VIEW */
         .search-bar {
             background: var(--white);
-            border-radius: var(--radius);
-            padding: 14px 18px;
+            border-radius: 12px;
+            padding: 14px;
             display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
             box-shadow: var(--shadow);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
         }
-
-        .search-bar:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(255,107,53,0.1);
-        }
-
+        
         .search-bar input {
             flex: 1;
             border: none;
-            background: none;
-            font-size: 15px;
-            font-family: inherit;
             outline: none;
-            color: var(--dark);
+            font-size: 15px;
         }
-
-        .search-bar input::placeholder {
-            color: var(--gray);
-        }
-
+        
         .category-pills {
             display: flex;
             gap: 10px;
             overflow-x: auto;
             margin-bottom: 20px;
-            padding-bottom: 5px;
-            scrollbar-width: none;
         }
-
-        .category-pills::-webkit-scrollbar {
-            display: none;
-        }
-
+        
         .category-pill {
             padding: 10px 20px;
             background: var(--white);
-            border: 2px solid transparent;
-            border-radius: 25px;
+            border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-            color: var(--gray);
-        }
-
-        .category-pill:hover {
-            transform: translateY(-2px);
             box-shadow: var(--shadow);
         }
-
+        
         .category-pill.active {
             background: var(--primary);
             color: var(--white);
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
         }
-
+        
         .food-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
         }
-
-        .food-card {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .food-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-        }
-
+        
+        .food-card { overflow: hidden; padding: 0; }
+        
         .food-image {
-            width: 100%;
-            height: 140px;
-            background: linear-gradient(135deg, var(--primary-light) 0%, #FFE0E0 100%);
+            height: 120px;
+            background: var(--primary-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 64px;
-            position: relative;
-            overflow: hidden;
+            font-size: 48px;
         }
-
-        .food-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: var(--primary);
-            color: var(--white);
-            padding: 4px 10px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .food-info {
-            padding: 16px;
-        }
-
+        
+        .food-info { padding: 16px; }
+        
         .food-name {
             font-weight: 700;
             font-size: 14px;
-            margin-bottom: 6px;
-            line-height: 1.3;
-            color: var(--dark);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin-bottom: 4px;
         }
-
+        
         .food-price {
             color: var(--primary);
             font-weight: 800;
-            font-size: 16px;
             margin-bottom: 8px;
         }
-
-        .food-time {
-            font-size: 12px;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 12px;
-        }
-
+        
         .add-to-cart {
             width: 100%;
             padding: 10px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: var(--primary);
             color: var(--white);
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: 13px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.3s ease;
         }
-
-        .add-to-cart:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
-        }
-
+        
         .quantity-control {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--gray-light);
-            border-radius: 10px;
+            background: #F5F5F5;
+            border-radius: 8px;
             padding: 4px;
         }
-
+        
         .qty-btn {
             width: 32px;
             height: 32px;
             border: none;
             background: var(--white);
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 18px;
-            font-weight: 700;
             cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
-            color: var(--dark);
         }
-
-        .qty-btn:hover {
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        .qty-value {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--dark);
-        }
-
-        /* ============================================
-           CART BAR
-           ============================================ */
         
+        /* CART BAR */
         .cart-bar {
             position: fixed;
             bottom: 0;
@@ -1178,43 +590,27 @@
             background: var(--white);
             padding: 16px 20px;
             box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
-            z-index: 90;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            border-radius: 24px 24px 0 0;
+            transition: transform 0.3s ease;
         }
-
+        
         .cart-bar.show {
             transform: translateX(-50%) translateY(0);
         }
-
+        
         .cart-info {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-bottom: 12px;
         }
-
-        .cart-count {
-            font-size: 14px;
-            color: var(--gray);
-            font-weight: 500;
-        }
-
-        .cart-count span {
-            color: var(--primary);
-            font-weight: 700;
-        }
-
+        
         .cart-total {
             font-size: 24px;
             font-weight: 800;
             color: var(--primary);
         }
-
-        /* ============================================
-           MODALS
-           ============================================ */
         
+        /* MODAL */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1226,108 +622,56 @@
             z-index: 200;
             align-items: flex-end;
             justify-content: center;
-            backdrop-filter: blur(5px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
-
+        
         .modal-overlay.show {
             display: flex;
-            opacity: 1;
         }
-
+        
         .modal-content {
             background: var(--white);
             width: 100%;
             max-width: 480px;
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            padding: 28px 24px;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
             max-height: 90vh;
             overflow-y: auto;
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .modal-overlay.show .modal-content {
-            transform: translateY(0);
-        }
-
+        
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
-
-        .modal-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
+        
         .modal-close {
             width: 40px;
             height: 40px;
             border: none;
-            background: var(--gray-light);
+            background: #F5F5F5;
             border-radius: 50%;
             font-size: 20px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
         }
-
-        .modal-close:hover {
-            background: #FFEBEE;
-            color: #C62828;
-            transform: rotate(90deg);
-        }
-
+        
         .summary-box {
-            background: linear-gradient(135deg, var(--primary-light) 0%, #FFF 100%);
-            padding: 20px;
-            border-radius: var(--radius);
+            background: var(--primary-light);
+            padding: 16px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255,107,53,0.1);
         }
-
-        .summary-title {
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--dark);
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-items {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 12px;
-            line-height: 1.8;
-        }
-
-        .summary-total {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary);
-            padding-top: 12px;
-            border-top: 2px dashed rgba(255,107,53,0.2);
-        }
-
+        
         .seller-info-box {
-            background: var(--success-light);
+            background: #E8F5E9;
             padding: 14px;
-            border-radius: var(--radius);
+            border-radius: 12px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 12px;
-            border: 1px solid rgba(46,204,113,0.2);
         }
-
+        
         .seller-info-box .icon {
             width: 40px;
             height: 40px;
@@ -1339,481 +683,27 @@
             justify-content: center;
             font-size: 20px;
         }
-
-        .seller-info-box .text {
-            flex: 1;
-        }
-
-        .seller-info-box .label {
-            font-size: 12px;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .seller-info-box .value {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        /* ============================================
-           TRACKING PAGE - ANIMASI GOFOOD STYLE
-           ============================================ */
         
-        .tracking-container {
-            padding: 20px;
-            min-height: 100vh;
-            background: linear-gradient(180deg, #FFF5F0 0%, #FFF 100%);
-        }
-
-        /* Animasi Koki Memasak */
-        .cooking-stage {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-lg);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cooking-animation {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 24px;
-            background: linear-gradient(135deg, #FFF5F0 0%, #FFE8E0 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 4px 20px rgba(255,107,53,0.1);
-        }
-
-        .cooking-animation.active::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,107,53,0.2) 0%, transparent 70%);
-            animation: ring 2s ease-out infinite;
-        }
-
-        .chef-hat {
-            position: absolute;
-            top: 30px;
-            font-size: 60px;
-            animation: bounce 1s ease-in-out infinite;
-            z-index: 3;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-        }
-
-        .pan {
-            position: relative;
-            width: 100px;
-            height: 60px;
-            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
-            border-radius: 0 0 50px 50px;
-            margin-top: 40px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            z-index: 2;
-        }
-
-        .pan::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            right: -35px;
-            width: 40px;
-            height: 10px;
-            background: #2C3E50;
-            border-radius: 5px;
-            transform: rotate(-15deg);
-        }
-
-        .cooking-animation.active .pan {
-            animation: shake 0.5s ease-in-out infinite;
-        }
-
-        .fire {
-            position: absolute;
-            bottom: 40px;
-            width: 70px;
-            height: 50px;
-            background: linear-gradient(to top, #FF6B35, #F7931E, transparent);
-            border-radius: 50% 50% 20% 20%;
-            filter: blur(3px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .cooking-animation.active .fire {
-            opacity: 0.9;
-            animation: fire 0.4s ease-in-out infinite;
-        }
-
-        .steam-container {
-            position: absolute;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 60px;
-            z-index: 1;
-        }
-
-        .steam {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, transparent 70%);
-            border-radius: 50%;
-            opacity: 0;
-        }
-
-        .cooking-animation.active .steam {
-            animation: steam 2s ease-out infinite;
-        }
-
-        .steam:nth-child(1) { left: 10px; animation-delay: 0s; }
-        .steam:nth-child(2) { left: 30px; animation-delay: 0.3s; }
-        .steam:nth-child(3) { left: 50px; animation-delay: 0.6s; }
-
-        .ingredients-fall {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            z-index: 4;
-        }
-
-        .ingredient {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .cooking-animation.active .ingredient {
-            animation: ingredientDrop 1.5s ease-out infinite;
-        }
-
-        .ingredient:nth-child(1) { left: -30px; animation-delay: 0s; }
-        .ingredient:nth-child(2) { left: 0; animation-delay: 0.5s; }
-        .ingredient:nth-child(3) { left: 30px; animation-delay: 1s; }
-
-        @keyframes ingredientDrop {
-            0% { transform: translateY(-30px) rotate(0deg); opacity: 0; }
-            30% { opacity: 1; }
-            100% { transform: translateY(20px) rotate(360deg); opacity: 0; }
-        }
-
-        /* Status Tracking */
-        .tracking-status-text {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .tracking-message {
-            color: var(--gray);
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* Stepper Modern */
-        .stepper-container {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .stepper {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        .stepper-line {
-            position: absolute;
-            top: 20px;
-            left: 40px;
-            right: 40px;
-            height: 4px;
-            background: #E0E0E0;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .stepper-line-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 2px;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 0%;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-            flex: 1;
-        }
-
-        .step-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--white);
-            border: 3px solid #E0E0E0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 8px;
-        }
-
-        .step.active .step-icon {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            transform: scale(1.1);
-            animation: pulse 2s infinite;
-            box-shadow: 0 4px 15px rgba(255,107,53,0.4);
-        }
-
-        .step.completed .step-icon {
-            border-color: var(--success);
-            background: var(--success);
-            color: var(--white);
-        }
-
-        .step-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--gray);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .step.active .step-label {
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .step.completed .step-label {
-            color: var(--success);
-        }
-
-        /* Delivery Animation */
-        .delivery-animation {
-            display: none;
-            position: relative;
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 100%);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .delivery-animation.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .road {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 50px;
-            background: #34495E;
-        }
-
-        .road-line {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: repeating-linear-gradient(
-                90deg,
-                #FFFFFF 0px,
-                #FFFFFF 20px,
-                transparent 20px,
-                transparent 40px
-            );
-            transform: translateY(-50%);
-        }
-
-        .delivery-animation.show .road-line {
-            animation: road-move 1s linear infinite;
-        }
-
-        .scooter {
-            position: absolute;
-            bottom: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 60px;
-            z-index: 2;
-        }
-
-        .delivery-animation.show .scooter {
-            animation: drive 0.6s ease-in-out infinite;
-        }
-
-        .driver {
-            position: absolute;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 30px;
-            z-index: 3;
-        }
-
-        /* Chat Button */
-        .chat-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-            color: var(--white);
-            padding: 16px;
-            border-radius: var(--radius);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 4px 15px rgba(37,211,102,0.4);
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .chat-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(37,211,102,0.5);
-        }
-
-        .chat-button:active {
-            transform: translateY(-1px);
-        }
-
-        /* Order Detail Card */
-        .order-detail-card {
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            box-shadow: var(--shadow);
-        }
-
-        .order-detail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #F0F0F0;
-        }
-
-        .order-detail-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .order-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .meta-item .label {
-            font-weight: 600;
-            color: var(--dark);
-            min-width: 80px;
-        }
-
-        .order-items-detail {
-            background: #F8F9FA;
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-size: 14px;
-            border-bottom: 1px dashed #E0E0E0;
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-
-        .detail-total {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 12px;
-            border-top: 2px solid #E0E0E0;
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        /* ============================================
-           EMPTY STATES
-           ============================================ */
-        
+        /* EMPTY STATE */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: var(--gray);
         }
-
+        
         .empty-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-            animation: float 3s ease-in-out infinite;
+            font-size: 64px;
+            margin-bottom: 16px;
         }
-
+        
         .empty-title {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 8px;
             color: var(--dark);
+            margin-bottom: 8px;
         }
-
-        .empty-text {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        /* ============================================
-           NOTIFICATIONS
-           ============================================ */
         
+        /* NOTIFICATION */
         .notification {
             position: fixed;
             top: 20px;
@@ -1822,135 +712,70 @@
             background: var(--dark);
             color: var(--white);
             padding: 16px 24px;
-            border-radius: var(--radius);
-            font-size: 14px;
+            border-radius: 12px;
             font-weight: 600;
             z-index: 1000;
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: all 0.3s ease;
         }
-
+        
         .notification.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
-
-        .notification.success {
-            background: var(--success);
-        }
-
-        .notification.error {
-            background: #C62828;
-        }
-
-        /* ============================================
-           UTILITIES
-           ============================================ */
-        
-        .hidden {
-            display: none !important;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mb-4 {
-            margin-bottom: 16px;
-        }
-
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
-        
-        @media (max-width: 480px) {
-            .app-container {
-                max-width: 100%;
-            }
-            
-            .food-grid {
-                gap: 12px;
-            }
-            
-            .cooking-animation {
-                width: 160px;
-                height: 160px;
-            }
-            
-            .chef-hat {
-                font-size: 48px;
-            }
-        }
-
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Notification -->
+    <div class="container">
+        <!-- NOTIFICATION -->
         <div id="notification" class="notification"></div>
 
-        <!-- ==================== LANDING PAGE ==================== -->
-        <div id="landingPage" class="page active">
+        <!-- ============================================
+             LANDING PAGE
+             ============================================ -->
+        <div id="landingPage" class="page">
             <div class="header">
-                <div class="header-top">
-                    <div class="logo">
-                        <div class="logo-icon">🍽️</div>
-                        <span>Kantin Smansa</span>
-                    </div>
+                <div class="logo">
+                    <span>🍽️</span>
+                    <span>Kantin Smansa</span>
                 </div>
-                <div class="header-content">
-                    <h1>Pesan Makanan Favoritmu Tanpa Antri!</h1>
-                    <p>Pesan dari kelas, ambil di kantin atau diantar ke kelas</p>
-                </div>
+                <h1>Pesan Makanan Favoritmu!</h1>
+                <p>Tanpa antri, langsung dimasak & diantar</p>
             </div>
 
             <div class="role-section">
                 <h2 class="section-title">Masuk sebagai</h2>
-                <div class="role-grid">
-                    <div class="role-card" onclick="showPage('buyerHome')">
-                        <div class="role-icon-wrap buyer">🎓</div>
-                        <div class="role-info">
-                            <h3>Siswa / Pembeli</h3>
-                            <p>Pesan makanan & tracking pesanan</p>
-                        </div>
-                        <div class="role-arrow">›</div>
+                
+                <div class="role-card" onclick="showPage('buyerHome')">
+                    <div class="role-icon buyer">🎓</div>
+                    <div class="role-info">
+                        <h3>Siswa / Pembeli</h3>
+                        <p>Pesan makanan & tracking</p>
                     </div>
+                    <div class="role-arrow">›</div>
+                </div>
 
-                    <div class="role-card" onclick="showPage('sellerLogin')">
-                        <div class="role-icon-wrap seller">👨‍🍳</div>
-                        <div class="role-info">
-                            <h3>Penjual Kantin</h3>
-                            <p>Kelola menu & proses pesanan</p>
-                        </div>
-                        <div class="role-arrow">›</div>
+                <div class="role-card" onclick="showPage('sellerLogin')">
+                    <div class="role-icon seller">👨‍🍳</div>
+                    <div class="role-info">
+                        <h3>Penjual Kantin</h3>
+                        <p>Kelola menu & proses pesanan</p>
                     </div>
+                    <div class="role-arrow">›</div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== SELLER LOGIN ==================== -->
-        <div id="sellerLogin" class="page">
+        <!-- ============================================
+             SELLER LOGIN
+             ============================================ -->
+        <div id="sellerLogin" class="page hidden">
             <div class="form-container">
-                <button class="btn-back" onclick="showPage('landingPage')">
-                    ← Kembali
-                </button>
-
+                <button class="btn-back" onclick="showPage('landingPage')">← Kembali</button>
+                
                 <div class="form-header">
                     <div class="form-illustration">👨‍🍳</div>
                     <h2>Login Penjual</h2>
-                    <p>Masukkan password dan nomor WhatsApp untuk mengelola kantin</p>
                 </div>
 
                 <div class="form-card">
@@ -1959,16 +784,16 @@
                         <span>Password salah!</span>
                     </div>
 
-                    <form id="loginForm" onsubmit="return doLogin(event)">
+                    <form onsubmit="return doLogin(event)">
                         <div class="form-group">
                             <label class="form-label">Password</label>
                             <input type="password" id="sellerPassword" class="form-input" placeholder="Masukkan password" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Nomor WhatsApp Penjual</label>
-                            <input type="tel" id="sellerWA" class="form-input" placeholder="Contoh: 6289612345678" required>
-                            <p class="input-hint">💡 Format: 62 + nomor tanpa 0 di depan</p>
+                            <label class="form-label">Nomor WhatsApp</label>
+                            <input type="tel" id="sellerWA" class="form-input" placeholder="6289612345678" required>
+                            <p class="input-hint">Format: 62 + nomor tanpa 0</p>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Masuk Dashboard</button>
@@ -1977,13 +802,15 @@
             </div>
         </div>
 
-        <!-- ==================== SELLER DASHBOARD ==================== -->
-        <div id="sellerDashboard" class="page dashboard">
+        <!-- ============================================
+             SELLER DASHBOARD
+             ============================================ -->
+        <div id="sellerDashboard" class="page hidden dashboard">
             <div class="dashboard-header">
                 <div class="dashboard-top">
                     <div class="user-info">
                         <h3>👨‍🍳 Mode Penjual</h3>
-                        <p id="sellerPhoneDisplay">WA: -</p>
+                        <p id="sellerWADisplay">WA: -</p>
                     </div>
                     <button class="logout-btn" onclick="doLogout()">Logout</button>
                 </div>
@@ -1994,11 +821,11 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="statOrders">0</div>
-                        <div class="stat-label">Pesanan Hari Ini</div>
+                        <div class="stat-label">Pesanan</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="statPending">0</div>
-                        <div class="stat-label">Menunggu</div>
+                        <div class="stat-label">Pending</div>
                     </div>
                 </div>
             </div>
@@ -2008,29 +835,29 @@
                     <h3 class="section-title-sm">📋 Menu Saya</h3>
                     <button class="add-btn" onclick="openMenuModal()">+</button>
                 </div>
-                <div id="sellerMenuList" class="menu-list">
+                <div id="sellerMenuList">
                     <div class="empty-state">
                         <div class="empty-icon">🍽️</div>
                         <div class="empty-title">Belum ada menu</div>
-                        <div class="empty-text">Tambahkan menu pertama Anda</div>
                     </div>
                 </div>
 
                 <div class="section-header" style="margin-top: 30px;">
                     <h3 class="section-title-sm">📦 Pesanan Masuk</h3>
                 </div>
-                <div id="orderList" class="order-list">
+                <div id="orderList">
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
                         <div class="empty-title">Belum ada pesanan</div>
-                        <div class="empty-text">Pesanan akan muncul di sini</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== BUYER HOME ==================== -->
-        <div id="buyerHome" class="page dashboard">
+        <!-- ============================================
+             BUYER HOME
+             ============================================ -->
+        <div id="buyerHome" class="page hidden dashboard">
             <div class="dashboard-header">
                 <div class="dashboard-top">
                     <div class="user-info">
@@ -2056,234 +883,119 @@
                     <div class="empty-state">
                         <div class="empty-icon">🍽️</div>
                         <div class="empty-title">Menu belum tersedia</div>
-                        <div class="empty-text">Tunggu penjual menambahkan menu</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Cart Bar -->
+            <!-- CART BAR -->
             <div id="cartBar" class="cart-bar">
                 <div class="cart-info">
-                    <span class="cart-count"><span id="cartItemCount">0</span> item</span>
+                    <span><span id="cartItemCount">0</span> item</span>
                     <span class="cart-total">Rp <span id="cartTotal">0</span></span>
                 </div>
-                <button class="btn btn-primary" onclick="openCheckoutModal()">
-                    Lanjutkan Pesanan →
-                </button>
+                <button class="btn btn-primary" onclick="openCheckoutModal()">Lanjutkan Pesanan →</button>
             </div>
         </div>
 
-        <!-- ==================== CHECKOUT MODAL ==================== -->
+        <!-- ============================================
+             CHECKOUT MODAL
+             ============================================ -->
         <div id="checkoutModal" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Data Pemesan</h3>
+                    <h3>Checkout</h3>
                     <button class="modal-close" onclick="closeCheckoutModal()">×</button>
                 </div>
-                
-                <form id="checkoutForm" onsubmit="return submitOrder(event)">
+
+                <form onsubmit="return submitOrder(event)">
                     <div class="form-group">
                         <label class="form-label">Nama Lengkap</label>
-                        <input type="text" id="buyerName" class="form-input" placeholder="Nama kamu" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Kelas / Lokasi</label>
-                        <input type="text" id="buyerClass" class="form-input" placeholder="Contoh: Kelas 10A / Perpustakaan" required>
+                        <input type="text" id="buyerName" class="form-input" required>
                     </div>
 
-                    <!-- INPUT NOMOR WHATSAPP PEMBELI - BARU -->
+                    <div class="form-group">
+                        <label class="form-label">Kelas / Lokasi</label>
+                        <input type="text" id="buyerClass" class="form-input" required>
+                    </div>
+
+                    <!-- INPUT WHATSAPP PEMBELI - PENTING! -->
                     <div class="form-group">
                         <label class="form-label">Nomor WhatsApp</label>
-                        <input type="tel" id="buyerPhone" class="form-input" placeholder="Contoh: 6289612345678" required>
-                        <p class="input-hint">💡 Penting: Nomor ini untuk dihubungi penjual</p>
+                        <input type="tel" id="buyerPhone" class="form-input" placeholder="6289612345678" required>
+                        <p class="input-hint">Untuk dihubungi penjual</p>
                     </div>
 
                     <div class="summary-box">
-                        <div class="summary-title">Ringkasan Pesanan</div>
-                        <div id="checkoutItems" class="summary-items"></div>
-                        <div class="summary-total">
+                        <strong>Ringkasan Pesanan:</strong>
+                        <div id="checkoutItems" style="margin: 10px 0;"></div>
+                        <div style="font-size: 20px; font-weight: 800; color: var(--primary);">
                             Total: Rp <span id="checkoutTotal">0</span>
                         </div>
                     </div>
 
                     <div id="checkoutSellerInfo" class="seller-info-box" style="display: none;">
                         <div class="icon">📱</div>
-                        <div class="text">
-                            <div class="label">Pesanan akan dikirim ke:</div>
-                            <div class="value" id="checkoutSellerWA">-</div>
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Pesanan ke:</div>
+                            <div style="font-weight: 700;" id="checkoutSellerWA">-</div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        📱 Pesan via WhatsApp
-                    </button>
+                    <button type="submit" class="btn btn-primary">📱 Pesan via WhatsApp</button>
                 </form>
             </div>
         </div>
 
-        <!-- ==================== TRACKING PAGE ==================== -->
-        <div id="trackingPage" class="page">
-            <div class="tracking-container">
-                <button class="btn-back" onclick="backToBuyer()">
-                    ← Kembali ke Menu
-                </button>
-
-                <!-- Cooking Animation Stage -->
-                <div class="cooking-stage">
-                    <div class="cooking-animation active" id="cookingAnimation">
-                        <div class="steam-container">
-                            <div class="steam"></div>
-                            <div class="steam"></div>
-                            <div class="steam"></div>
-                        </div>
-                        <div class="fire"></div>
-                        <div class="pan"></div>
-                        <div class="ingredients-fall">
-                            <span class="ingredient">🥕</span>
-                            <span class="ingredient">🥩</span>
-                            <span class="ingredient">🌶️</span>
-                        </div>
-                        <div class="chef-hat">👨‍🍳</div>
-                    </div>
-                    
-                    <div class="tracking-status-text" id="trackingStatus">Sedang Dimasak</div>
-                    <div class="tracking-message" id="trackingMessage">Koki kami sedang memasak pesananmu dengan penuh cinta</div>
-                </div>
-
-                <!-- Delivery Animation (Hidden by default) -->
-                <div class="delivery-animation" id="deliveryAnimation">
-                    <div class="road">
-                        <div class="road-line"></div>
-                    </div>
-                    <div class="scooter">🛵</div>
-                    <div class="driver">👦</div>
-                </div>
-
-                <!-- Stepper -->
-                <div class="stepper-container">
-                    <div class="stepper">
-                        <div class="stepper-line">
-                            <div class="stepper-line-fill" id="stepperFill" style="width: 25%"></div>
-                        </div>
-                        
-                        <div class="step completed" id="step1">
-                            <div class="step-icon">📝</div>
-                            <div class="step-label">Dipesan</div>
-                        </div>
-                        <div class="step active" id="step2">
-                            <div class="step-icon">👨‍🍳</div>
-                            <div class="step-label">Dimasak</div>
-                        </div>
-                        <div class="step" id="step3">
-                            <div class="step-icon">🛵</div>
-                            <div class="step-label">Diantar</div>
-                        </div>
-                        <div class="step" id="step4">
-                            <div class="step-icon">✅</div>
-                            <div class="step-label">Sampai</div>
-                        </div>
-                    </div>
-
-                    <a href="#" id="chatSellerBtn" class="chat-button" target="_blank">
-                        💬 Chat Penjual via WhatsApp
-                    </a>
-                </div>
-
-                <!-- Order Detail -->
-                <div class="order-detail-card">
-                    <div class="order-detail-header">
-                        <span class="order-detail-title">Detail Pesanan</span>
-                        <span class="status-badge status-process" id="trackingStatusBadge">Diproses</span>
-                    </div>
-                    
-                    <div class="order-meta">
-                        <div class="meta-item">
-                            <span class="label">Nama:</span>
-                            <span id="trackingName">-</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="label">Lokasi:</span>
-                            <span id="trackingClass">-</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="label">WhatsApp:</span>
-                            <span id="trackingPhone">-</span>
-                        </div>
-                    </div>
-
-                    <div class="order-items-detail" id="trackingItems"></div>
-                    
-                    <div class="detail-total">
-                        <span>Total</span>
-                        <span id="trackingTotal">Rp 0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== MENU MODAL (SELLER) ==================== -->
+        <!-- ============================================
+             MENU MODAL (SELLER)
+             ============================================ -->
         <div id="menuModal" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="menuModalTitle">Tambah Menu</h3>
+                    <h3 id="menuModalTitle">Tambah Menu</h3>
                     <button class="modal-close" onclick="closeMenuModal()">×</button>
                 </div>
-                
-                <form id="menuForm" onsubmit="return saveMenu(event)">
+
+                <form onsubmit="return saveMenu(event)">
                     <input type="hidden" id="editMenuId">
                     
                     <div class="form-group">
                         <label class="form-label">Nama Makanan</label>
-                        <input type="text" id="menuName" class="form-input" placeholder="Contoh: Nasi Goreng Spesial" required>
+                        <input type="text" id="menuName" class="form-input" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label">Harga (Rp)</label>
-                        <input type="number" id="menuPrice" class="form-input" placeholder="15000" required min="1000">
+                        <input type="number" id="menuPrice" class="form-input" required min="1000">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Kategori</label>
-                        <select id="menuCategory" class="form-input" style="appearance: none; background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23999%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center;">
-                            <option value="food">🍛 Makanan Berat</option>
+                        <select id="menuCategory" class="form-input">
+                            <option value="food">🍛 Makanan</option>
                             <option value="drink">🥤 Minuman</option>
                             <option value="snack">🍿 Snack</option>
                         </select>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Estimasi Waktu (menit)</label>
-                        <input type="number" id="menuTime" class="form-input" placeholder="10" required min="1" max="120">
-                    </div>
 
                     <div class="form-group">
-                        <label class="form-label">Deskripsi (Opsional)</label>
-                        <textarea id="menuDesc" class="form-input" rows="2" placeholder="Deskripsi singkat menu..."></textarea>
+                        <label class="form-label">Estimasi Waktu (menit)</label>
+                        <input type="number" id="menuTime" class="form-input" required min="1">
                     </div>
 
                     <button type="submit" class="btn btn-primary" id="btnSaveMenu">Simpan Menu</button>
-                    <button type="button" class="btn btn-outline hidden" id="btnCancelEdit" onclick="resetMenuForm()">Batal Edit</button>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- ============================================
+         JAVASCRIPT + FIREBASE
+         ============================================ -->
     <script>
-        // ==========================================
-        // CONFIGURATION & STATE
-        // ==========================================
-        
+        // KONFIGURASI
         const CONFIG = {
-            SELLER_PASSWORD: 'smansa2024',
-            STORAGE_KEYS: {
-                MENU: 'kantin_menu_v2',
-                ORDERS: 'kantin_orders_v2',
-                SELLER_WA: 'kantin_seller_wa',
-                SELLER_NAME: 'kantin_seller_name',
-                SELLER_SESSION: 'seller_logged_in',
-                SELLER_SESSION_WA: 'seller_wa_session'
-            }
+            SELLER_PASSWORD: 'smansa2024'
         };
 
         const EMOJIS = {
@@ -2292,165 +1004,113 @@
             snack: '🍿'
         };
 
-        // State
+        // STATE
         let state = {
             menu: [],
             orders: [],
             cart: [],
-            currentBuyer: null,
-            currentOrderId: null,
             sellerWA: '',
             isSellerLoggedIn: false
         };
 
         // ==========================================
-        // INITIALIZATION
+        // FIREBASE REALTIME - INISIALISASI
         // ==========================================
         
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            checkSession();
-        });
-
-        function loadData() {
-            try {
-                state.menu = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.MENU)) || [];
-                state.orders = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.ORDERS)) || [];
-                state.sellerWA = localStorage.getItem(CONFIG.STORAGE_KEYS.SELLER_WA) || '';
-            } catch (e) {
-                console.error('Error loading data:', e);
-                state.menu = [];
-                state.orders = [];
-            }
-        }
-
-        function checkSession() {
-            state.isSellerLoggedIn = sessionStorage.getItem(CONFIG.STORAGE_KEYS.SELLER_SESSION) === 'true';
-            if (state.isSellerLoggedIn) {
-                const sessionWA = sessionStorage.getItem(CONFIG.STORAGE_KEYS.SELLER_SESSION_WA);
-                if (sessionWA) {
-                    state.sellerWA = sessionWA;
-                    showPage('sellerDashboard');
+        function initFirebase() {
+            // Listen menu (realtime)
+            DB.ref('menu').on('value', (snapshot) => {
+                state.menu = snapshot.val() || [];
+                console.log('📋 Menu updated:', state.menu.length);
+                
+                if (document.getElementById('buyerHome').classList.contains('active')) {
+                    updateBuyerView();
                 }
-            }
+                if (document.getElementById('sellerDashboard').classList.contains('active')) {
+                    renderMenuList();
+                    updateStats();
+                }
+            });
+
+            // Listen orders (realtime)
+            DB.ref('orders').on('value', (snapshot) => {
+                state.orders = snapshot.val() || [];
+                console.log('📦 Orders updated:', state.orders.length);
+                
+                if (document.getElementById('sellerDashboard').classList.contains('active')) {
+                    renderOrderList();
+                    updateStats();
+                }
+            });
         }
 
-        function saveData() {
-            localStorage.setItem(CONFIG.STORAGE_KEYS.MENU, JSON.stringify(state.menu));
-            localStorage.setItem(CONFIG.STORAGE_KEYS.ORDERS, JSON.stringify(state.orders));
-            localStorage.setItem(CONFIG.STORAGE_KEYS.SELLER_WA, state.sellerWA);
-        }
-
-                // ==========================================
+        // ==========================================
         // NAVIGATION
         // ==========================================
         
         function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
             
-            // Show target page
-            document.getElementById(pageId).classList.add('active');
-            
-            // Initialize page
             if (pageId === 'sellerDashboard') {
                 updateSellerView();
             } else if (pageId === 'buyerHome') {
                 updateBuyerView();
             }
-            
-            window.scrollTo(0, 0);
-        }
-
-        function backToLanding() {
-            showPage('landingPage');
-        }
-
-        function backToBuyer() {
-            showPage('buyerHome');
-            state.cart = [];
-            updateCart();
         }
 
         // ==========================================
-        // SELLER AUTHENTICATION
+        // SELLER AUTH
         // ==========================================
         
         function doLogin(e) {
             e.preventDefault();
             
             const password = document.getElementById('sellerPassword').value;
-            const waInput = document.getElementById('sellerWA').value.trim();
+            const wa = document.getElementById('sellerWA').value.trim();
             
-            // Validasi password
             if (password !== CONFIG.SELLER_PASSWORD) {
-                showError('loginError', 'Password salah! Silakan coba lagi.');
+                showError('loginError', 'Password salah!');
                 return false;
             }
             
-            // Validasi nomor WA
-            if (!waInput || waInput.length < 10) {
-                showError('loginError', 'Nomor WhatsApp tidak valid!');
-                return false;
-            }
-            
-            // Simpan data seller
-            state.sellerWA = waInput;
+            state.sellerWA = wa;
             state.isSellerLoggedIn = true;
             
-            // Simpan ke localStorage (untuk data permanen)
-            localStorage.setItem(CONFIG.STORAGE_KEYS.SELLER_WA, waInput);
-            localStorage.setItem(CONFIG.STORAGE_KEYS.SELLER_NAME, 'Kantin Smansa');
+            // Simpan ke local (device ini saja)
+            localStorage.setItem('sellerWA', wa);
+            localStorage.setItem('sellerLoggedIn', 'true');
             
-            // Simpan ke sessionStorage (untuk sesi login)
-            sessionStorage.setItem(CONFIG.STORAGE_KEYS.SELLER_SESSION, 'true');
-            sessionStorage.setItem(CONFIG.STORAGE_KEYS.SELLER_SESSION_WA, waInput);
+            // Simpan ke Firebase (agar pembeli tahu nomor penjual)
+            DB.ref('sellerWA').set(wa);
             
-            showNotification('✅ Login berhasil!', 'success');
+            showNotification('✅ Login berhasil!');
             showPage('sellerDashboard');
-            
             return false;
         }
 
         function doLogout() {
-            if (confirm('Yakin ingin logout?')) {
-                sessionStorage.removeItem(CONFIG.STORAGE_KEYS.SELLER_SESSION);
-                sessionStorage.removeItem(CONFIG.STORAGE_KEYS.SELLER_SESSION_WA);
-                
-                state.isSellerLoggedIn = false;
-                state.sellerWA = '';
-                
-                showNotification('👋 Logout berhasil', 'success');
-                showPage('landingPage');
-            }
+            localStorage.removeItem('sellerLoggedIn');
+            state.isSellerLoggedIn = false;
+            showNotification('👋 Logout berhasil');
+            showPage('landingPage');
         }
 
         // ==========================================
-        // SELLER DASHBOARD - MENU MANAGEMENT
+        // SELLER DASHBOARD
         // ==========================================
         
         function updateSellerView() {
-            // Update stats
-            document.getElementById('statMenu').textContent = state.menu.length;
-            document.getElementById('sellerPhoneDisplay').textContent = `WA: ${state.sellerWA || '-'}`;
-            
-            // Hitung pesanan hari ini
-            const today = new Date().toDateString();
-            const todayOrders = state.orders.filter(o => {
-                const orderDate = new Date(o.timestamp).toDateString();
-                return orderDate === today;
-            });
-            
-            document.getElementById('statOrders').textContent = todayOrders.length;
-            document.getElementById('statPending').textContent = state.orders.filter(o => o.status === 'pending').length;
-            
-            // Render menu list
+            document.getElementById('sellerWADisplay').textContent = 'WA: ' + state.sellerWA;
             renderMenuList();
-            
-            // Render orders
             renderOrderList();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('statMenu').textContent = state.menu.length;
+            document.getElementById('statOrders').textContent = state.orders.length;
+            document.getElementById('statPending').textContent = state.orders.filter(o => o.status === 'pending').length;
         }
 
         function renderMenuList() {
@@ -2461,7 +1121,6 @@
                     <div class="empty-state">
                         <div class="empty-icon">🍽️</div>
                         <div class="empty-title">Belum ada menu</div>
-                        <div class="empty-text">Tambahkan menu pertama Anda untuk mulai menerima pesanan</div>
                     </div>
                 `;
                 return;
@@ -2471,18 +1130,12 @@
                 <div class="menu-card">
                     <div class="menu-image">${menu.emoji || EMOJIS[menu.category]}</div>
                     <div class="menu-details">
-                        <div>
-                            <div class="menu-name">${menu.name}</div>
-                            <div class="menu-price">Rp ${menu.price.toLocaleString()}</div>
-                            <div class="menu-meta">
-                                <span>⏱️ ${menu.time} menit</span>
-                                <span>•</span>
-                                <span>${getCategoryLabel(menu.category)}</span>
-                            </div>
-                        </div>
+                        <div class="menu-name">${menu.name}</div>
+                        <div class="menu-price">Rp ${menu.price.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: var(--gray);">⏱️ ${menu.time} menit</div>
                         <div class="menu-actions">
-                            <button class="btn-icon btn-edit" onclick="editMenu('${menu.id}')" title="Edit">✏️</button>
-                            <button class="btn-icon btn-delete" onclick="deleteMenu('${menu.id}')" title="Hapus">🗑️</button>
+                            <button class="btn-icon btn-edit" onclick="editMenu('${menu.id}')">✏️</button>
+                            <button class="btn-icon btn-delete" onclick="deleteMenu('${menu.id}')">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -2491,26 +1144,25 @@
 
         function renderOrderList() {
             const container = document.getElementById('orderList');
-            const pendingOrders = state.orders.filter(o => o.status !== 'done').reverse();
+            const pending = state.orders.filter(o => o.status !== 'done').reverse();
             
-            if (pendingOrders.length === 0) {
+            if (pending.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
                         <div class="empty-title">Belum ada pesanan</div>
-                        <div class="empty-text">Pesanan dari siswa akan muncul di sini secara real-time</div>
                     </div>
                 `;
                 return;
             }
             
-            container.innerHTML = pendingOrders.map(order => `
-                <div class="order-card status-${order.status}">
+            container.innerHTML = pending.map(order => `
+                <div class="order-card">
                     <div class="order-header">
                         <div class="order-customer">
                             <h4>${order.buyer}</h4>
                             <div class="customer-phone">📱 ${order.buyerPhone}</div>
-                            <p>${order.class} • ${order.time}</p>
+                            <p style="font-size: 13px; color: var(--gray);">${order.class}</p>
                         </div>
                         <span class="status-badge status-${order.status}">${getStatusLabel(order.status)}</span>
                     </div>
@@ -2522,38 +1174,32 @@
                             </div>
                         `).join('')}
                     </div>
-                    <div class="order-total">Total: Rp ${order.total.toLocaleString()}</div>
+                    <div class="order-total">Rp ${order.total.toLocaleString()}</div>
                     <div class="order-actions">
-                        ${order.status === 'pending' ? 
-                            `<button class="btn-action btn-accept" onclick="updateOrderStatus('${order.id}', 'process')">✅ Terima Pesanan</button>` :
-                            `<button class="btn-action btn-process" onclick="updateOrderStatus('${order.id}', 'done')">🚚 Antar Pesanan</button>`
+                        ${order.status === 'pending' 
+                            ? `<button class="btn-action btn-accept" onclick="updateOrderStatus('${order.id}', 'process')">✅ Terima</button>`
+                            : `<button class="btn-action btn-process" onclick="updateOrderStatus('${order.id}', 'done')">🚚 Selesai</button>`
                         }
-                        <a href="https://wa.me/${order.buyerPhone}?text=${encodeURIComponent(`Halo ${order.buyer}, pesanan kamu sedang ${getStatusLabel(order.status)}. Terima kasih!`)}" 
-                           target="_blank" class="btn-action btn-chat-seller">💬 Chat Pembeli</a>
+                        <a href="https://wa.me/${order.buyerPhone}?text=${encodeURIComponent(`Halo ${order.buyer}, pesanan kamu sedang ${getStatusLabel(order.status)}`)}" 
+                           target="_blank" class="btn-action btn-chat">💬 Chat</a>
                     </div>
                 </div>
             `).join('');
         }
 
         // ==========================================
-        // MENU CRUD OPERATIONS
+        // MENU CRUD
         // ==========================================
         
         function openMenuModal() {
             document.getElementById('menuModal').classList.add('show');
-            resetMenuForm();
+            document.getElementById('menuModalTitle').textContent = 'Tambah Menu';
+            document.getElementById('editMenuId').value = '';
+            document.getElementById('btnSaveMenu').textContent = 'Simpan Menu';
         }
 
         function closeMenuModal() {
             document.getElementById('menuModal').classList.remove('show');
-        }
-
-        function resetMenuForm() {
-            document.getElementById('menuForm').reset();
-            document.getElementById('editMenuId').value = '';
-            document.getElementById('menuModalTitle').textContent = 'Tambah Menu';
-            document.getElementById('btnSaveMenu').textContent = 'Simpan Menu';
-            document.getElementById('btnCancelEdit').classList.add('hidden');
         }
 
         function saveMenu(e) {
@@ -2564,30 +1210,25 @@
             
             const menuData = {
                 id: id || Date.now().toString(),
-                name: document.getElementById('menuName').value.trim(),
+                name: document.getElementById('menuName').value,
                 price: parseInt(document.getElementById('menuPrice').value),
                 category: category,
                 time: parseInt(document.getElementById('menuTime').value),
-                desc: document.getElementById('menuDesc').value.trim(),
-                emoji: EMOJIS[category],
-                createdAt: new Date().toISOString()
+                emoji: EMOJIS[category]
             };
             
             if (id) {
                 const index = state.menu.findIndex(m => m.id === id);
-                if (index !== -1) {
-                    state.menu[index] = { ...state.menu[index], ...menuData };
-                    showNotification('✏️ Menu diupdate!', 'success');
-                }
+                if (index !== -1) state.menu[index] = menuData;
             } else {
                 state.menu.push(menuData);
-                showNotification('✅ Menu ditambahkan!', 'success');
             }
             
-            saveData();
-            closeMenuModal();
-            updateSellerView();
+            // SIMPAN KE FIREBASE (realtime)
+            DB.ref('menu').set(state.menu);
             
+            closeMenuModal();
+            showNotification(id ? '✏️ Menu diupdate!' : '✅ Menu ditambahkan!');
             return false;
         }
 
@@ -2600,22 +1241,17 @@
             document.getElementById('menuPrice').value = menu.price;
             document.getElementById('menuCategory').value = menu.category;
             document.getElementById('menuTime').value = menu.time;
-            document.getElementById('menuDesc').value = menu.desc || '';
             
             document.getElementById('menuModalTitle').textContent = 'Edit Menu';
             document.getElementById('btnSaveMenu').textContent = 'Update Menu';
-            document.getElementById('btnCancelEdit').classList.remove('hidden');
-            
             openMenuModal();
         }
 
         function deleteMenu(id) {
-            if (confirm('Yakin ingin menghapus menu ini?')) {
-                state.menu = state.menu.filter(m => m.id !== id);
-                saveData();
-                updateSellerView();
-                showNotification('🗑️ Menu dihapus', 'success');
-            }
+            if (!confirm('Hapus menu ini?')) return;
+            state.menu = state.menu.filter(m => m.id !== id);
+            DB.ref('menu').set(state.menu);
+            showNotification('🗑️ Menu dihapus');
         }
 
         function updateOrderStatus(orderId, newStatus) {
@@ -2623,11 +1259,8 @@
             if (!order) return;
             
             order.status = newStatus;
-            order.updatedAt = new Date().toISOString();
-            
-            saveData();
-            updateSellerView();
-            showNotification(`✅ Pesanan ${getStatusLabel(newStatus)}`, 'success');
+            DB.ref('orders').set(state.orders);
+            showNotification(`✅ Pesanan ${getStatusLabel(newStatus)}`);
         }
 
         // ==========================================
@@ -2642,7 +1275,6 @@
                     <div class="empty-state">
                         <div class="empty-icon">🍽️</div>
                         <div class="empty-title">Menu belum tersedia</div>
-                        <div class="empty-text">Tunggu penjual menambahkan menu atau refresh halaman</div>
                     </div>
                 `;
                 return;
@@ -2652,24 +1284,18 @@
                 const inCart = state.cart.find(c => c.id === menu.id);
                 return `
                     <div class="food-card" data-category="${menu.category}">
-                        <div class="food-image">
-                            ${menu.emoji || EMOJIS[menu.category]}
-                            ${menu.time <= 10 ? '<span class="food-badge">⚡ Cepat</span>' : ''}
-                        </div>
+                        <div class="food-image">${menu.emoji || EMOJIS[menu.category]}</div>
                         <div class="food-info">
                             <div class="food-name">${menu.name}</div>
                             <div class="food-price">Rp ${menu.price.toLocaleString()}</div>
-                            <div class="food-time">⏱️ ${menu.time} menit</div>
                             ${inCart ? `
                                 <div class="quantity-control">
                                     <button class="qty-btn" onclick="updateQty('${menu.id}', -1)">−</button>
-                                    <span class="qty-value">${inCart.qty}</span>
+                                    <span>${inCart.qty}</span>
                                     <button class="qty-btn" onclick="updateQty('${menu.id}', 1)">+</button>
                                 </div>
                             ` : `
-                                <button class="add-to-cart" onclick="addToCart('${menu.id}')">
-                                    🛒 Tambah
-                                </button>
+                                <button class="add-to-cart" onclick="addToCart('${menu.id}')">🛒 Tambah</button>
                             `}
                         </div>
                     </div>
@@ -2677,31 +1303,20 @@
             }).join('');
         }
 
-        function filterCategory(category, element) {
-            // Update active pill
-            document.querySelectorAll('.category-pill').forEach(pill => {
-                pill.classList.remove('active');
-            });
-            element.classList.add('active');
+        function filterCategory(cat, el) {
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
             
-            // Filter items
-            const items = document.querySelectorAll('.food-card');
-            items.forEach(item => {
-                if (category === 'all' || item.dataset.category === category) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
+            document.querySelectorAll('.food-card').forEach(card => {
+                card.style.display = (cat === 'all' || card.dataset.category === cat) ? 'block' : 'none';
             });
         }
 
         function searchMenu() {
             const query = document.getElementById('searchFood').value.toLowerCase();
-            const items = document.querySelectorAll('.food-card');
-            
-            items.forEach(item => {
-                const name = item.querySelector('.food-name').textContent.toLowerCase();
-                item.style.display = name.includes(query) ? 'block' : 'none';
+            document.querySelectorAll('.food-card').forEach(card => {
+                const name = card.querySelector('.food-name').textContent.toLowerCase();
+                card.style.display = name.includes(query) ? 'block' : 'none';
             });
         }
 
@@ -2717,12 +1332,12 @@
             if (existing) {
                 existing.qty++;
             } else {
-                state.cart.push({ ...menu, qty: 1 });
+                state.cart.push({...menu, qty: 1});
             }
             
             updateBuyerView();
             updateCart();
-            showNotification('✅ Ditambahkan ke keranjang', 'success');
+            showNotification('✅ Ditambahkan ke keranjang');
         }
 
         function updateQty(menuId, change) {
@@ -2739,47 +1354,32 @@
         }
 
         function updateCart() {
-            const cartBar = document.getElementById('cartBar');
-            const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
-            const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const count = state.cart.reduce((s, i) => s + i.qty, 0);
+            const total = state.cart.reduce((s, i) => s + (i.price * i.qty), 0);
             
-            if (count > 0) {
-                cartBar.classList.add('show');
-                document.getElementById('cartItemCount').textContent = count;
-                document.getElementById('cartTotal').textContent = total.toLocaleString();
-            } else {
-                cartBar.classList.remove('show');
-            }
+            document.getElementById('cartItemCount').textContent = count;
+            document.getElementById('cartTotal').textContent = total.toLocaleString();
+            
+            document.getElementById('cartBar').classList.toggle('show', count > 0);
         }
 
-        // ==========================================
-        // CHECKOUT & ORDER SUBMISSION
-        // ==========================================
-        
         function openCheckoutModal() {
-            if (state.cart.length === 0) {
-                showNotification('❌ Keranjang masih kosong!', 'error');
-                return;
-            }
+            const total = state.cart.reduce((s, i) => s + (i.price * i.qty), 0);
             
-            const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            
-            document.getElementById('checkoutItems').innerHTML = state.cart.map(item => `
-                <div>${item.emoji || EMOJIS[item.category]} ${item.name} x${item.qty}</div>
-            `).join('');
+            document.getElementById('checkoutItems').innerHTML = state.cart.map(i => 
+                `<div>${i.emoji || EMOJIS[i.category]} ${i.name} x${i.qty}</div>`
+            ).join('');
             
             document.getElementById('checkoutTotal').textContent = total.toLocaleString();
             
-            // Tampilkan info seller jika tersedia
-            const sellerInfo = document.getElementById('checkoutSellerInfo');
-            const sellerWASpan = document.getElementById('checkoutSellerWA');
-            
-            if (state.sellerWA) {
-                sellerWASpan.textContent = state.sellerWA;
-                sellerInfo.style.display = 'flex';
-            } else {
-                sellerInfo.style.display = 'none';
-            }
+            // Tampilkan nomor penjual jika ada
+            DB.ref('sellerWA').once('value').then(snap => {
+                const wa = snap.val();
+                if (wa) {
+                    document.getElementById('checkoutSellerWA').textContent = wa;
+                    document.getElementById('checkoutSellerInfo').style.display = 'flex';
+                }
+            });
             
             document.getElementById('checkoutModal').classList.add('show');
         }
@@ -2795,266 +1395,102 @@
             const cls = document.getElementById('buyerClass').value.trim();
             const phone = document.getElementById('buyerPhone').value.trim();
             
-            // Validasi
             if (!name || !cls || !phone) {
                 showNotification('❌ Semua field harus diisi!', 'error');
                 return false;
             }
             
-            if (!/^[0-9]{10,15}$/.test(phone)) {
-                showNotification('❌ Nomor WhatsApp tidak valid!', 'error');
-                return false;
-            }
-            
-            if (state.cart.length === 0) {
-                showNotification('❌ Keranjang kosong!', 'error');
-                return false;
-            }
-            
-            // Cek apakah seller sudah set nomor WA
-            if (!state.sellerWA) {
-                showNotification('❌ Penjual belum mengatur nomor WhatsApp!', 'error');
-                return false;
-            }
-            
-            // Buat order
-            const maxTime = Math.max(...state.cart.map(item => item.time));
-            const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            
-            const order = {
-                id: Date.now().toString(),
-                buyer: name,
-                buyerPhone: phone, // NOMOR WHATSAPP PEMBELI - PENTING!
-                class: cls,
-                items: [...state.cart],
-                total: total,
-                status: 'pending',
-                time: new Date().toLocaleString('id-ID', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    day: 'numeric',
-                    month: 'short'
-                }),
-                timestamp: Date.now(),
-                estimateTime: maxTime,
-                sellerWA: state.sellerWA // Simpan nomor seller saat itu
-            };
-            
-            state.orders.push(order);
-            state.currentOrderId = order.id;
-            state.currentBuyer = name;
-            
-            saveData();
-            
-            // Kirim WhatsApp ke seller
-            const waMessage = generateOrderMessage(order);
-            window.open(`https://wa.me/${state.sellerWA}?text=${encodeURIComponent(waMessage)}`, '_blank');
-            
-            closeCheckoutModal();
-            showTracking(order);
+            // Ambil nomor penjual dari Firebase
+            DB.ref('sellerWA').once('value').then(snap => {
+                const sellerWA = snap.val();
+                
+                if (!sellerWA) {
+                    showNotification('❌ Penjual belum login!', 'error');
+                    return;
+                }
+                
+                const total = state.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+                const maxTime = Math.max(...state.cart.map(i => i.time));
+                
+                const order = {
+                    id: Date.now().toString(),
+                    buyer: name,
+                    buyerPhone: phone, // NOMOR PEMBELI - PENTING!
+                    class: cls,
+                    items: [...state.cart],
+                    total: total,
+                    status: 'pending',
+                    time: new Date().toLocaleString('id-ID'),
+                    timestamp: Date.now(),
+                    estimateTime: maxTime,
+                    sellerWA: sellerWA
+                };
+                
+                state.orders.push(order);
+                DB.ref('orders').set(state.orders); // Simpan ke Firebase
+                
+                // Kirim WhatsApp ke penjual
+                const msg = `*PESANAN BARU*\\n\\nNama: ${name}\\nKelas: ${cls}\\nWA: ${phone}\\n\\n${state.cart.map(i => `• ${i.name} x${i.qty}`).join('\\n')}\\n\\n*Total: Rp ${total.toLocaleString()}*`;
+                
+                window.open(`https://wa.me/${sellerWA}?text=${encodeURIComponent(msg)}`, '_blank');
+                
+                closeCheckoutModal();
+                showNotification('✅ Pesanan terkirim!');
+                state.cart = [];
+                updateCart();
+            });
             
             return false;
         }
 
-        function generateOrderMessage(order) {
-            let message = `*PESANAN BARU - KANTIN SMANSA* 🍽️\n\n`;
-            message += `*Detail Pemesan:*\n`;
-            message += `Nama: ${order.buyer}\n`;
-            message += `Kelas/Lokasi: ${order.class}\n`;
-            message += `WhatsApp: ${order.buyerPhone}\n\n`;
-            message += `*Pesanan:*\n`;
-            
-            order.items.forEach(item => {
-                message += `• ${item.emoji || EMOJIS[item.category]} ${item.name} x${item.qty} = Rp ${(item.price * item.qty).toLocaleString()}\n`;
-            });
-            
-            message += `\n*Total: Rp ${order.total.toLocaleString()}*\n`;
-            message += `*Estimasi: ${order.estimateTime} menit*\n\n`;
-            message += `Terima kasih! 🙏`;
-            
-            return message;
-        }
-
         // ==========================================
-        // TRACKING PAGE - ANIMASI GOFOOD STYLE
-        // ==========================================
-        
-        function showTracking(order) {
-            showPage('trackingPage');
-            
-            // Update info pemesan
-            document.getElementById('trackingName').textContent = order.buyer;
-            document.getElementById('trackingClass').textContent = order.class;
-            document.getElementById('trackingPhone').textContent = order.buyerPhone;
-            
-            // Update items
-            document.getElementById('trackingItems').innerHTML = order.items.map(item => `
-                <div class="detail-item">
-                    <span>${item.emoji || EMOJIS[item.category]} ${item.name} x${item.qty}</span>
-                    <span>Rp ${(item.price * item.qty).toLocaleString()}</span>
-                </div>
-            `).join('');
-            
-            document.getElementById('trackingTotal').textContent = `Rp ${order.total.toLocaleString()}`;
-            
-            // Update status
-            updateTrackingStatus(order.status);
-            
-            // Setup chat button - LINK WHATSAPP SPESIFIK UNTUK PESANAN INI
-            const chatBtn = document.getElementById('chatSellerBtn');
-            const sellerWA = order.sellerWA || state.sellerWA;
-            
-            if (sellerWA) {
-                const message = `Halo, saya ${order.buyer} (Pesanan: ${order.id.slice(-4)}). Mau tanya tentang pesanan saya.`;
-                chatBtn.href = `https://wa.me/${sellerWA}?text=${encodeURIComponent(message)}`;
-                chatBtn.style.display = 'flex';
-            } else {
-                chatBtn.style.display = 'none';
-            }
-        }
-
-        function updateTrackingStatus(status) {
-            const config = {
-                pending: { 
-                    fill: '0%', 
-                    step: 1, 
-                    text: 'Menunggu Konfirmasi',
-                    msg: 'Pesananmu sedang menunggu konfirmasi dari penjual',
-                    showCooking: false,
-                    showDelivery: false
-                },
-                process: { 
-                    fill: '33%', 
-                    step: 2, 
-                    text: 'Sedang Dimasak 👨‍🍳',
-                    msg: 'Koki kami sedang memasak pesananmu dengan penuh cinta',
-                    showCooking: true,
-                    showDelivery: false
-                },
-                deliver: { 
-                    fill: '66%', 
-                    step: 3, 
-                    text: 'Dalam Perjalanan 🛵',
-                    msg: 'Driver kami sedang mengantar pesananmu',
-                    showCooking: false,
-                    showDelivery: true
-                },
-                done: { 
-                    fill: '100%', 
-                    step: 4, 
-                    text: 'Pesanan Sampai! 🎉',
-                    msg: 'Selamat menikmati makananmu',
-                    showCooking: false,
-                    showDelivery: false
-                }
-            };
-            
-            const cfg = config[status] || config.pending;
-            
-            // Update stepper line
-            document.getElementById('stepperFill').style.width = cfg.fill;
-            
-            // Update steps
-            for (let i = 1; i <= 4; i++) {
-                const step = document.getElementById(`step${i}`);
-                step.classList.remove('active', 'completed');
-                
-                if (i < cfg.step) {
-                    step.classList.add('completed');
-                } else if (i === cfg.step) {
-                    step.classList.add('active');
-                }
-            }
-            
-            // Update status text
-            document.getElementById('trackingStatus').textContent = cfg.text;
-            document.getElementById('trackingMessage').textContent = cfg.msg;
-            
-            // Toggle animations
-            const cookingAnim = document.getElementById('cookingAnimation');
-            const deliveryAnim = document.getElementById('deliveryAnimation');
-            
-            if (cfg.showCooking) {
-                cookingAnim.classList.add('active');
-                cookingAnim.style.display = 'flex';
-                deliveryAnim.classList.remove('show');
-            } else if (cfg.showDelivery) {
-                cookingAnim.classList.remove('active');
-                cookingAnim.style.display = 'none';
-                deliveryAnim.classList.add('show');
-            } else {
-                cookingAnim.classList.remove('active');
-                cookingAnim.style.display = 'flex';
-                deliveryAnim.classList.remove('show');
-            }
-            
-            // Update badge
-            const badge = document.getElementById('trackingStatusBadge');
-            badge.className = `status-badge status-${status}`;
-            badge.textContent = getStatusLabel(status);
-        }
-
-        // ==========================================
-        // UTILITY FUNCTIONS
+        // UTILITIES
         // ==========================================
         
         function getStatusLabel(status) {
-            const labels = {
-                pending: 'Menunggu',
-                process: 'Diproses',
-                deliver: 'Diantar',
-                done: 'Selesai'
-            };
+            const labels = { pending: 'Menunggu', process: 'Diproses', done: 'Selesai' };
             return labels[status] || status;
         }
 
-        function getCategoryLabel(category) {
-            const labels = {
-                food: 'Makanan',
-                drink: 'Minuman',
-                snack: 'Snack'
-            };
-            return labels[category] || category;
-        }
-
-        function showNotification(message, type = 'success') {
+        function showNotification(msg, type = 'success') {
             const notif = document.getElementById('notification');
-            notif.textContent = message;
-            notif.className = `notification ${type}`;
+            notif.textContent = msg;
+            notif.className = 'notification ' + (type === 'error' ? 'error' : '');
             notif.classList.add('show');
-            
-            setTimeout(() => {
-                notif.classList.remove('show');
-            }, 3000);
+            setTimeout(() => notif.classList.remove('show'), 3000);
         }
 
-        function showError(elementId, message) {
-            const errorEl = document.getElementById(elementId);
-            errorEl.querySelector('span:last-child').textContent = message;
-            errorEl.classList.add('show');
-            
-            setTimeout(() => {
-                errorEl.classList.remove('show');
-            }, 3000);
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.querySelector('span:last-child').textContent = msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
         }
 
-        // Close modal on outside click
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                event.target.classList.remove('show');
+        // Tutup modal klik outside
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('show');
             }
         };
 
-        // Auto refresh untuk seller (polling)
-        setInterval(() => {
-            if (document.getElementById('sellerDashboard').classList.contains('active')) {
-                const currentOrders = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.ORDERS)) || [];
-                if (JSON.stringify(currentOrders) !== JSON.stringify(state.orders)) {
-                    state.orders = currentOrders;
-                    renderOrderList();
-                }
+        // ==========================================
+        // START
+        // ==========================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cek session seller
+            const savedWA = localStorage.getItem('sellerWA');
+            const loggedIn = localStorage.getItem('sellerLoggedIn');
+            
+            if (loggedIn === 'true' && savedWA) {
+                state.sellerWA = savedWA;
+                state.isSellerLoggedIn = true;
             }
-        }, 3000);
+            
+            // Nyalakan Firebase realtime
+            initFirebase();
+        });
     </script>
 </body>
 </html>
