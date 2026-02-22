@@ -950,6 +950,19 @@
             font-weight: 600;
             margin-top: 15px;
             box-shadow: 0 4px 15px rgba(37,211,102,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+        }
+
+        .chat-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .modal {
@@ -1054,6 +1067,23 @@
 
         .hidden {
             display: none !important;
+        }
+
+        /* Tambahan: Style untuk info penjual */
+        .seller-info-bar {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #1565C0;
+        }
+
+        .seller-info-bar strong {
+            color: #0D47A1;
         }
 
         @media (max-width: 480px) {
@@ -1204,6 +1234,16 @@
                         <p>Pesan makanan favoritmu</p>
                     </div>
                 </div>
+                
+                <!-- Info Penjual -->
+                <div id="sellerInfoBar" class="seller-info-bar" style="display: none;">
+                    <span>📱</span>
+                    <div>
+                        <div>Penjual: <strong id="sellerNameDisplay">-</strong></div>
+                        <div style="font-size: 11px; opacity: 0.8;">WA: <span id="sellerWADisplay">-</span></div>
+                    </div>
+                </div>
+
                 <div class="search-bar">
                     <span>🔍</span>
                     <input type="text" placeholder="Lagi mau mamam apa?" id="searchFood" onkeyup="searchMenu()">
@@ -1266,6 +1306,14 @@
                         </div>
                     </div>
 
+                    <!-- Info WA Penjual di Checkout -->
+                    <div id="checkoutSellerInfo" style="background: #E8F5E9; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 13px; display: none;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #2E7D32;">
+                            <span>📱</span>
+                            <span>Pesanan akan dikirim ke WhatsApp: <strong id="checkoutSellerWA">-</strong></span>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">
                         📱 Pesan via WhatsApp
                     </button>
@@ -1317,6 +1365,12 @@
                     <a href="#" id="chatSellerBtn" class="chat-btn" target="_blank">
                         💬 Chat Penjual
                     </a>
+                    
+                    <!-- Info Kontak Penjual -->
+                    <div id="trackingSellerInfo" style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 8px; font-size: 12px; color: #666; display: none;">
+                        <div>Penjual: <span id="trackingSellerName">-</span></div>
+                        <div>WA: <span id="trackingSellerWANumber">-</span></div>
+                    </div>
                 </div>
 
                 <div style="background: var(--white); border-radius: 16px; padding: 20px; box-shadow: var(--shadow);">
@@ -1382,9 +1436,13 @@
         let ordersData = JSON.parse(localStorage.getItem('kantin_orders')) || [];
         let cart = [];
         let currentBuyer = '';
-        let sellerWA = '';
-        let isSellerLoggedIn = sessionStorage.getItem('seller_logged_in') === 'true';
         let currentOrderId = null;
+        
+        // PERBAIKAN: Simpan nomor WA penjual di localStorage agar persisten
+        // dan bisa diakses oleh pembeli
+        let sellerWA = localStorage.getItem('kantin_seller_wa') || '';
+        let sellerName = localStorage.getItem('kantin_seller_name') || 'Penjual Kantin';
+        let isSellerLoggedIn = sessionStorage.getItem('seller_logged_in') === 'true';
 
         // Emoji mapping
         const EMOJIS = {
@@ -1395,8 +1453,16 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            if (isSellerLoggedIn) {
+            // PERBAIKAN: Load sellerWA dari localStorage jika ada
+            if (!sellerWA && isSellerLoggedIn) {
                 sellerWA = sessionStorage.getItem('seller_wa') || '';
+                // Sync ke localStorage untuk akses pembeli
+                if (sellerWA) {
+                    localStorage.setItem('kantin_seller_wa', sellerWA);
+                }
+            }
+            
+            if (isSellerLoggedIn) {
                 showSection('sellerDashboard');
             }
         });
@@ -1418,6 +1484,8 @@
                 updateSellerView();
             } else if (sectionId === 'buyerHome') {
                 updateBuyerView();
+                // PERBAIKAN: Tampilkan info penjual jika tersedia
+                displaySellerInfo();
             }
         }
 
@@ -1431,14 +1499,37 @@
             updateCart();
         }
 
+        // PERBAIKAN: Fungsi baru untuk menampilkan info penjual di halaman pembeli
+        function displaySellerInfo() {
+            const infoBar = document.getElementById('sellerInfoBar');
+            const nameDisplay = document.getElementById('sellerNameDisplay');
+            const waDisplay = document.getElementById('sellerWADisplay');
+            
+            // Reload dari localStorage untuk memastikan data terbaru
+            sellerWA = localStorage.getItem('kantin_seller_wa') || '';
+            sellerName = localStorage.getItem('kantin_seller_name') || 'Penjual Kantin';
+            
+            if (sellerWA) {
+                nameDisplay.textContent = sellerName;
+                waDisplay.textContent = sellerWA;
+                infoBar.style.display = 'flex';
+            } else {
+                infoBar.style.display = 'none';
+            }
+        }
+
         // Seller Login
         function doLogin(e) {
             e.preventDefault();
             const password = document.getElementById('sellerPassword').value;
-            const wa = document.getElementById('sellerWA').value;
+            const wa = document.getElementById('sellerWA').value.trim();
             
             if (password === SELLER_PASSWORD) {
+                // PERBAIKAN: Simpan ke localStorage agar pembeli bisa akses
                 sellerWA = wa;
+                localStorage.setItem('kantin_seller_wa', wa);
+                localStorage.setItem('kantin_seller_name', 'Kantin Smansa');
+                
                 sessionStorage.setItem('seller_logged_in', 'true');
                 sessionStorage.setItem('seller_wa', wa);
                 isSellerLoggedIn = true;
@@ -1458,6 +1549,8 @@
             if (confirm('Yakin ingin logout?')) {
                 sessionStorage.removeItem('seller_logged_in');
                 sessionStorage.removeItem('seller_wa');
+                // PERBAIKAN: Jangan hapus localStorage agar pembeli masih bisa chat
+                // ke nomor yang terdaftar
                 isSellerLoggedIn = false;
                 sellerWA = '';
                 showNotif('👋 Logout berhasil');
@@ -1763,6 +1856,21 @@
             document.getElementById('checkoutItems').innerHTML = cart.map(item => 
                 `<div>${item.emoji || getEmoji(item.category)} ${item.name} x${item.qty}</div>`
             ).join('');
+            
+            // PERBAIKAN: Tampilkan info WA penjual di checkout
+            const sellerInfoDiv = document.getElementById('checkoutSellerInfo');
+            const sellerWASpan = document.getElementById('checkoutSellerWA');
+            
+            // Reload terbaru dari localStorage
+            const currentSellerWA = localStorage.getItem('kantin_seller_wa') || '';
+            
+            if (currentSellerWA) {
+                sellerWASpan.textContent = currentSellerWA;
+                sellerInfoDiv.style.display = 'block';
+            } else {
+                sellerInfoDiv.style.display = 'none';
+            }
+            
             document.getElementById('checkoutModal').classList.add('show');
         }
 
@@ -1778,6 +1886,15 @@
             
             if (!name || !cls || cart.length === 0) return;
             
+            // PERBAIKAN: Ambil nomor WA penjual dari localStorage
+            const activeSellerWA = localStorage.getItem('kantin_seller_wa') || '';
+            const activeSellerName = localStorage.getItem('kantin_seller_name') || 'Penjual Kantin';
+            
+            if (!activeSellerWA) {
+                showNotif('❌ Penjual belum mengatur nomor WhatsApp!');
+                return false;
+            }
+            
             currentBuyer = name;
             const maxTime = Math.max(...cart.map(item => item.time));
             const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
@@ -1785,7 +1902,6 @@
             const order = {
                 id: Date.now().toString(),
                 buyer: name,
-                buyerPhone: sellerWA,
                 class: cls,
                 items: [...cart],
                 total: total,
@@ -1793,7 +1909,9 @@
                 time: new Date().toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now(),
                 estimateTime: maxTime,
-                sellerWA: sellerWA
+                // PERBAIKAN: Simpan nomor WA penjual dengan benar
+                sellerWA: activeSellerWA,
+                sellerName: activeSellerName
             };
             
             ordersData.push(order);
@@ -1812,10 +1930,12 @@
             waMessage += `*Estimasi: ${maxTime} menit*\\n\\n`;
             waMessage += `Terima kasih! 🙏`;
             
-            window.open(`https://wa.me/${sellerWA}?text=${encodeURIComponent(waMessage)}`, '_blank');
+            // PERBAIKAN: Gunakan activeSellerWA yang sudah divalidasi
+            window.open(`https://wa.me/${activeSellerWA}?text=${encodeURIComponent(waMessage)}`, '_blank');
             
             closeCheckoutModal();
             showTracking(order);
+            return false;
         }
 
         function showTracking(order) {
@@ -1832,7 +1952,30 @@
                 </div>
             `;
             
-            document.getElementById('chatSellerBtn').href = `https://wa.me/${order.sellerWA}?text=${encodeURIComponent('Halo, saya ' + order.buyer + ' mau tanya pesanan saya')}`;
+            // PERBAIKAN: Gunakan sellerWA dari order dengan fallback ke localStorage
+            const targetWA = order.sellerWA || localStorage.getItem('kantin_seller_wa') || '';
+            const targetName = order.sellerName || localStorage.getItem('kantin_seller_name') || 'Penjual';
+            
+            const chatBtn = document.getElementById('chatSellerBtn');
+            const sellerInfoDiv = document.getElementById('trackingSellerInfo');
+            const sellerNameSpan = document.getElementById('trackingSellerName');
+            const sellerWANumberSpan = document.getElementById('trackingSellerWANumber');
+            
+            if (targetWA) {
+                const message = `Halo ${targetName}, saya ${order.buyer} mau tanya pesanan saya`;
+                chatBtn.href = `https://wa.me/${targetWA}?text=${encodeURIComponent(message)}`;
+                chatBtn.style.display = 'flex';
+                
+                // Tampilkan info penjual
+                sellerNameSpan.textContent = targetName;
+                sellerWANumberSpan.textContent = targetWA;
+                sellerInfoDiv.style.display = 'block';
+            } else {
+                // Jika tidak ada nomor, sembunyikan tombol chat
+                chatBtn.style.display = 'none';
+                sellerInfoDiv.style.display = 'none';
+                showNotif('⚠️ Nomor penjual tidak tersedia');
+            }
             
             updateTrackingStatus(order.status);
         }
